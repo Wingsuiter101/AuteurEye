@@ -1,152 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTMDB } from '../hooks/useTMDB';
 import { DirectorDetails } from '../types/tmdb';
-import { Film, Star, Clock, Award, TrendingUp } from 'lucide-react';
+import { Film, Star, Clock, TrendingUp } from 'lucide-react';
 
-const DirectorCard = ({ director, getImageUrl, navigate }) => {
-  const calculateAvgRating = (director: DirectorDetails) => {
-    const validMovies = director.directed_movies.filter(movie => movie.vote_average > 0);
-    return validMovies.length > 0
-      ? validMovies.reduce((acc, movie) => acc + movie.vote_average, 0) / validMovies.length
-      : 0;
-  };
+// At the top of HomePage.tsx, after imports
 
-  const getTopGenres = (director: DirectorDetails) => {
-    const genreCounts: { [key: string]: number } = {};
-    director.directed_movies.forEach(movie => {
-      movie.genres.forEach(genre => {
-        genreCounts[genre.name] = (genreCounts[genre.name] || 0) + 1;
-      });
-    });
-    
-    return Object.entries(genreCounts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 2)
-      .map(([genre, count]) => ({
-        name: genre,
-        percentage: (count / director.directed_movies.length) * 100
-      }));
-  };
 
-  const recentMovies = director.directed_movies
-    .filter(movie => movie.vote_average > 0)
-    .slice(0, 3);
 
-  return (
-    <motion.div 
-      whileHover={{ y: -8 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      className="bg-auteur-bg-dark rounded-xl overflow-hidden shadow-lg"
-    >
-      {/* Director Header */}
-      <div className="relative aspect-[16/9] overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center blur-sm brightness-50"
-          style={{ backgroundImage: `url(${getImageUrl(director.profile_path)})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg-dark" />
-        <div className="absolute inset-0 flex items-center justify-between p-4">
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 shadow-lg">
-              {director.profile_path ? (
-                <img
-                  src={getImageUrl(director.profile_path)}
-                  alt={director.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-auteur-neutral flex items-center justify-center">
-                  <span className="text-2xl text-white">{director.name[0]}</span>
-                </div>
-              )}
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white mb-1">{director.name}</h2>
-              <div className="flex items-center gap-3 text-sm text-white/80">
-                <div className="flex items-center gap-1">
-                  <Film className="w-4 h-4" />
-                  <span>{director.directed_movies.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <span>{calculateAvgRating(director).toFixed(1)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="p-4 border-b border-auteur-neutral/10">
-        <div className="flex items-center gap-1 text-sm text-auteur-neutral mb-2">
-          <TrendingUp className="w-4 h-4" />
-          <span>Top Genres:</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {getTopGenres(director).map(genre => (
-            <div 
-              key={genre.name}
-              className="px-2 py-1 bg-auteur-bg rounded-lg text-xs text-auteur-primary"
-            >
-              {genre.name} ({genre.percentage.toFixed(0)}%)
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Films */}
-      <div className="p-4">
-        <h3 className="text-sm font-medium text-auteur-primary mb-3">Recent Films</h3>
-        <div className="space-y-3">
-          {recentMovies.map(movie => (
-            <div key={movie.id} className="flex items-center gap-3">
-              <div className="w-12 h-16 rounded-lg overflow-hidden bg-auteur-neutral/20 flex-shrink-0">
-                {movie.poster_path ? (
-                  <img
-                    src={getImageUrl(movie.poster_path)}
-                    alt={movie.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Film className="w-6 h-6 text-auteur-neutral" />
-                  </div>
-                )}
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-auteur-primary">{movie.title}</h4>
-                <div className="flex items-center gap-2 text-xs text-auteur-neutral mt-1">
-                  <span>{new Date(movie.release_date).getFullYear()}</span>
-                  <span>•</span>
-                  <div className="flex items-center">
-                    <Star className="w-3 h-3 text-yellow-500" />
-                    <span className="ml-1">{movie.vote_average.toFixed(1)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* View Profile Button */}
-      <div className="p-4 pt-0">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate(`/director/${director.id}`)}
-          className="w-full py-2 bg-auteur-accent text-white rounded-lg text-sm font-medium
-                   hover:bg-auteur-accent-dark transition-colors"
-        >
-          View Full Profile
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-};
 
 const HomePage = () => {
   // Get the loading state and methods from useTMDB hook
@@ -309,8 +171,8 @@ const HomePage = () => {
                       <div className="w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0">
                         {activeDirector.profile_path ? (
                           <img
-                            src={getImageUrl(activeDirector.profile_path)}
-                            alt={activeDirector.name}
+                          src={getImageUrl(activeDirector.profile_path) || undefined}
+                          alt={activeDirector.name}
                             className="w-full h-full object-cover"
                           />
                         ) : (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
@@ -8,7 +8,7 @@ import { Director } from '../types/tmdb.ts';
 interface SearchResultProps {
   director: Director;
   onSelect: (director: Director) => void;
-  getImageUrl: (path: string | null) => string | null;
+  getImageUrl: (path: string | null, size?: string) => string | undefined;
   index: number;
 }
 
@@ -25,11 +25,11 @@ const SearchResult = ({ director, onSelect, getImageUrl, index }: SearchResultPr
     <div className="w-12 h-12 rounded-full overflow-hidden bg-auteur-neutral/20 flex-shrink-0
                     ring-2 ring-auteur-neutral/10 group-hover:ring-auteur-accent/30 transition-all">
       {director.profile_path ? (
-        <img
-          src={getImageUrl(director.profile_path)}
-          alt={director.name}
-          className="w-full h-full object-cover"
-        />
+        <img 
+  src={getImageUrl(director.profile_path) || undefined}
+  alt={director.name}
+  className="w-full h-full object-cover"
+/>
       ) : (
         <div className="w-full h-full flex items-center justify-center text-auteur-primary-light">
           {director.name[0]}

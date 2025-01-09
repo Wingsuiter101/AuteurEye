@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Film, GitCompare, Brain } from 'lucide-react';
+import { Menu, X, Home, GitCompare, Brain } from 'lucide-react';
 import SearchBar from './SearchBar';
 
 const Navbar = () => {

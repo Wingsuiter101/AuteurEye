@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTMDB } from '../hooks/useTMDB';
-import { DirectorDetails, Movie } from '../types/tmdb';
+import { DirectorDetails } from '../types/tmdb';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DirectorDetailPage = () => {
@@ -124,8 +124,8 @@ const DirectorDetailPage = () => {
                     <div className="aspect-[2/3] relative">
                       {movie.poster_path ? (
                         <img
-                          src={getImageUrl(movie.poster_path)}
-                          alt={movie.title}
+                        src={getImageUrl(movie.poster_path) || undefined}
+                        alt={movie.title}
                           className="w-full h-full object-cover"
                         />
                       ) : (

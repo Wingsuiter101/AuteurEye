@@ -1,6 +1,6 @@
 // src/hooks/useTMDB.ts
 import { useState, useCallback } from 'react';
-import { Director, DirectorDetails, Movie } from '../types/tmdb.ts';
+import { Director, DirectorDetails } from '../types/tmdb.ts';
 import { tmdbService } from '../services/tmdb.ts';
 
 interface UseTMDBReturn {
@@ -11,7 +11,7 @@ interface UseTMDBReturn {
   getPopularDirectors: (page?: number) => Promise<Director[]>;
   getEstablishedDirectors: () => Promise<Director[]>;  // Add this
   compareDirectors: (id1: number, id2: number) => Promise<any>;
-  getImageUrl: (path: string | null, size?: string) => string | null;
+  getImageUrl: (path: string | null, size?: string) => string | undefined;
 }
 
 export const useTMDB = (): UseTMDBReturn => {
@@ -52,9 +52,10 @@ export const useTMDB = (): UseTMDBReturn => {
   const compareDirectors = useCallback((id1: number, id2: number) => {
     return handleRequest(() => tmdbService.compareDirectors(id1, id2));
   }, []);
-
-  const getImageUrl = useCallback((path: string | null, size?: string) => {
-    return tmdbService.getImageUrl(path, size);
+  
+  const getImageUrl = useCallback((path: string | null, size?: string): string | undefined => {
+    const result = tmdbService.getImageUrl(path, size);
+    return result || undefined;  // Convert null to undefined
   }, []);
 
   return {

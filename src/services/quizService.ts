@@ -271,49 +271,6 @@ export class QuizService {
 
     return options;
 }
-
-  private getDirectorStyles(director: DirectorDetails): string[] {
-    const styles: string[] = [];
-    const movies = director.directed_movies;
-    const genres = new Set(movies.flatMap(m => m.genres.map(g => g.name)));
-    const avgRating = movies.reduce((sum, m) => sum + m.vote_average, 0) / movies.length;
-    const hasHighRatings = avgRating >= 7.5;
-
-    // Visual style indicators
-    if (movies.some(m => m.runtime && m.runtime > 150)) styles.push('epic');
-    if (genres.has('Documentary') || genres.has('Drama')) styles.push('naturalistic');
-    if (genres.has('Fantasy') || genres.has('Science Fiction')) styles.push('stylized');
-    if (hasHighRatings && genres.has('Drama')) styles.push('refined');
-
-    // Narrative approaches
-    if (movies.some(m => m.genres.length >= 3)) styles.push('genre_blending');
-    if (genres.has('Thriller') || genres.has('Mystery')) styles.push('suspense');
-    if (genres.has('Documentary')) styles.push('observational');
-    if (hasHighRatings && movies.length >= 5) styles.push('auteur');
-
-    // Technical preferences
-    if (genres.has('Action')) styles.push('dynamic');
-    if (genres.has('Animation')) styles.push('visual_innovation');
-    
-    return styles;
-  }
-
-  private areStylesComplementary(directorStyles: string[], questionStyles: string[]): boolean {
-    const complementaryPairs = new Map([
-      ['naturalistic', ['refined', 'observational']],
-      ['stylized', ['epic', 'visual_innovation']],
-      ['genre_blending', ['auteur', 'dynamic']],
-      ['suspense', ['refined', 'dynamic']],
-    ]);
-
-    return directorStyles.some(ds => 
-      questionStyles.some(qs => 
-        complementaryPairs.get(ds)?.includes(qs) ||
-        complementaryPairs.get(qs)?.includes(ds)
-      )
-    );
-  }
-
   /**
    * Dynamically generate questions based on the directors' first notable film era.
    * If an era group has at least `optionCount` directors, create a question with up to that many directors.

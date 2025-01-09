@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Film, Star, Camera, BookOpen, PenTool } from 'lucide-react';
 import { useTMDB } from '../hooks/useTMDB';
@@ -181,7 +181,7 @@ const ContextualQuiz = () => {
             >
               {movieScore.movie.poster_path ? (
                 <img
-                  src={getImageUrl(movieScore.movie.poster_path)}
+                src={getImageUrl(movieScore.movie.poster_path) || undefined}
                   alt={movieScore.movie.title}
                   className="w-full h-64 object-cover"
                 />

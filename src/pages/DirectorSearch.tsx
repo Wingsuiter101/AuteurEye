@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { SearchIcon, X } from 'lucide-react';
 import { Director, DirectorDetails } from '../types/tmdb.ts';
 
+// In DirectorSearch.tsx, update the interface:
 interface DirectorSearchProps {
   index: number;
   searchQuery: string;
@@ -10,7 +11,7 @@ interface DirectorSearchProps {
   selectedDirector: DirectorDetails | null;
   onDirectorSelect: (director: Director) => void;
   onDeselect: () => void;
-  getImageUrl: (path: string) => string;
+  getImageUrl: (path: string | null, size?: string) => string | undefined; // Updated return type
 }
 
 const DirectorSearch = memo(function DirectorSearch({
@@ -35,17 +36,17 @@ const DirectorSearch = memo(function DirectorSearch({
           {selectedDirector ? (
             <div className="flex items-center w-full p-3 md:p-4 rounded-lg bg-auteur-bg-card border border-auteur-neutral/20">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-auteur-neutral/20 mr-3">
-                {selectedDirector.profile_path ? (
-                  <img
-                    src={getImageUrl(selectedDirector.profile_path)}
-                    alt={selectedDirector.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-auteur-primary">
-                    {selectedDirector.name[0]}
-                  </div>
-                )}
+              {selectedDirector.profile_path ? (
+  <img
+    src={getImageUrl(selectedDirector.profile_path) || undefined}
+    alt={selectedDirector.name}
+    className="w-full h-full object-cover"
+  />
+) : (
+  <div className="w-full h-full flex items-center justify-center text-auteur-primary">
+    {selectedDirector.name[0]}
+  </div>
+)}
               </div>
               <div className="flex-grow">
                 <p className="text-sm md:text-base text-auteur-primary">{selectedDirector.name}</p>
@@ -82,17 +83,17 @@ const DirectorSearch = memo(function DirectorSearch({
                          text-left transition-colors border-b border-auteur-neutral/10 last:border-0"
               >
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-auteur-neutral/20 flex-shrink-0">
-                  {director.profile_path ? (
-                    <img
-                      src={getImageUrl(director.profile_path)}
-                      alt={director.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-auteur-primary">
-                      {director.name[0]}
-                    </div>
-                  )}
+                {director.profile_path ? (
+  <img
+    src={getImageUrl(director.profile_path) || undefined}
+    alt={director.name}
+    className="w-full h-full object-cover"
+  />
+) : (
+  <div className="w-full h-full flex items-center justify-center text-auteur-primary">
+    {director.name[0]}
+  </div>
+)}
                 </div>
                 <div>
                   <h3 className="font-medium text-sm text-auteur-primary">{director.name}</h3>

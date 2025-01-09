@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Film, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTMDB } from '../hooks/useTMDB.ts';
 import { Director, DirectorDetails } from '../types/tmdb.ts';
 import DirectorSearch from './DirectorSearch';
+
+interface Genre {
+  name: string;
+  percentage: number;
+}
 
 const ComparisonPage = () => {
   const { searchDirectors, getDirectorDetails, getImageUrl } = useTMDB();
@@ -168,14 +173,18 @@ const ComparisonPage = () => {
         />
       </div>
 
-      {comparisonData && (
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="grid md:grid-cols-2 gap-6"
-          >
+      {isLoading ? (
+  <div className="flex justify-center items-center w-full py-8">
+    <div className="w-8 h-8 border-4 border-auteur-accent rounded-full border-t-transparent animate-spin" />
+  </div>
+) : comparisonData && (
+  <AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="grid md:grid-cols-2 gap-6"
+    >
             {/* Stats for Director 1 */}
             <div className="space-y-4">
               {/* Average Rating */}
@@ -213,12 +222,14 @@ const ComparisonPage = () => {
                     </span>
                   </div>
                   <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(comparisonData.moviesCount[Object.keys(comparisonData.moviesCount)[0]] / 
-                        Math.max(...Object.values(comparisonData.moviesCount))) * 100}%` }}
-                      className="h-full bg-blue-500 rounded-full"
-                    />
+                  <motion.div
+  initial={{ width: 0 }}
+  animate={{ 
+    width: `${(comparisonData.moviesCount[Object.keys(comparisonData.moviesCount)[0]] / 
+      Math.max(...(Object.values(comparisonData.moviesCount) as number[]))) * 100}%` 
+  }}
+  className="h-full bg-blue-500 rounded-full"
+/>
                   </div>
                 </div>
               </div>
@@ -230,23 +241,24 @@ const ComparisonPage = () => {
                   <h3 className="text-sm md:text-base font-medium text-auteur-primary">Favorite Genres</h3>
                 </div>
                 <div className="space-y-3">
-                  {comparisonData.favoriteGenres[Object.keys(comparisonData.favoriteGenres)[0]].map((genre, idx) => (
-                    <div key={genre.name} className="mb-3">
-                      <div className="flex justify-between text-xs md:text-sm mb-1">
-                        <span className="text-auteur-primary">{genre.name}</span>
-                        <span className="text-auteur-neutral">{genre.percentage.toFixed(1)}%</span>
-                      </div>
-                      <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${genre.percentage}%` }}
-                          className={`h-full rounded-full ${
-                            idx === 0 ? 'bg-green-500' : idx === 1 ? 'bg-green-400' : 'bg-green-300'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                {comparisonData.favoriteGenres[Object.keys(comparisonData.favoriteGenres)[1]]
+  .map((genre: Genre, idx: number) => (
+    <div key={genre.name} className="mb-3">
+      <div className="flex justify-between text-xs md:text-sm mb-1">
+        <span className="text-auteur-primary">{genre.name}</span>
+        <span className="text-auteur-neutral">{genre.percentage.toFixed(1)}%</span>
+      </div>
+      <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${genre.percentage}%` }}
+          className={`h-full rounded-full ${
+            idx === 0 ? 'bg-green-500' : idx === 1 ? 'bg-green-400' : 'bg-green-300'
+          }`}
+        />
+      </div>
+    </div>
+  ))}
                 </div>
               </div>
 
@@ -303,12 +315,14 @@ const ComparisonPage = () => {
                     </span>
                   </div>
                   <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(comparisonData.moviesCount[Object.keys(comparisonData.moviesCount)[1]] / 
-                        Math.max(...Object.values(comparisonData.moviesCount))) * 100}%` }}
-                      className="h-full bg-blue-500 rounded-full"
-                    />
+                  <motion.div
+  initial={{ width: 0 }}
+  animate={{ 
+    width: `${(comparisonData.moviesCount[Object.keys(comparisonData.moviesCount)[1]] / 
+      Math.max(...(Object.values(comparisonData.moviesCount) as number[]))) * 100}%` 
+  }}
+  className="h-full bg-blue-500 rounded-full"
+/>
                   </div>
                 </div>
               </div>
@@ -320,23 +334,24 @@ const ComparisonPage = () => {
                   <h3 className="text-sm md:text-base font-medium text-auteur-primary">Favorite Genres</h3>
                 </div>
                 <div className="space-y-3">
-                  {comparisonData.favoriteGenres[Object.keys(comparisonData.favoriteGenres)[1]].map((genre, idx) => (
-                    <div key={genre.name} className="mb-3">
-                      <div className="flex justify-between text-xs md:text-sm mb-1">
-                        <span className="text-auteur-primary">{genre.name}</span>
-                        <span className="text-auteur-neutral">{genre.percentage.toFixed(1)}%</span>
-                      </div>
-                      <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${genre.percentage}%` }}
-                          className={`h-full rounded-full ${
-                            idx === 0 ? 'bg-green-500' : idx === 1 ? 'bg-green-400' : 'bg-green-300'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                {comparisonData.favoriteGenres[Object.keys(comparisonData.favoriteGenres)[0]]
+  .map((genre: Genre, idx: number) => (
+    <div key={genre.name} className="mb-3">
+      <div className="flex justify-between text-xs md:text-sm mb-1">
+        <span className="text-auteur-primary">{genre.name}</span>
+        <span className="text-auteur-neutral">{genre.percentage.toFixed(1)}%</span>
+      </div>
+      <div className="w-full h-2 bg-auteur-neutral/20 rounded-full">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${genre.percentage}%` }}
+          className={`h-full rounded-full ${
+            idx === 0 ? 'bg-green-500' : idx === 1 ? 'bg-green-400' : 'bg-green-300'
+          }`}
+        />
+      </div>
+    </div>
+  ))}
                 </div>
               </div>
 
@@ -356,7 +371,7 @@ const ComparisonPage = () => {
               </div>
             </div>
 
-            {selectedDirectors.map((director, index) => {
+            {selectedDirectors.map((director) => {
               if (!director) return null;
               const latestMovie = director.directed_movies[0]; // Movies are already sorted by date
               
@@ -376,11 +391,11 @@ const ComparisonPage = () => {
                       <div className="flex gap-4">
                         {latestMovie.poster_path && (
                           <div className="w-24 h-36 flex-shrink-0">
-                            <img
-                              src={getImageUrl(latestMovie.poster_path)}
-                              alt={latestMovie.title}
-                              className="w-full h-full object-cover rounded"
-                            />
+<img
+  src={latestMovie.poster_path ? getImageUrl(latestMovie.poster_path) || undefined : undefined}
+  alt={latestMovie.title}
+  className="w-full h-full object-cover"
+/>
                           </div>
                         )}
                         <div>
