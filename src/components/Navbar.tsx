@@ -32,9 +32,7 @@ const Navbar = () => {
           transition={{ duration: 0.2 }}
         >
 <div className="flex items-center gap-2">
-  <img
-    src="/src/assets/auteureye-logo.svg"
-    alt="AuteurEye"
+<img src="/AuteurEye/assets/auteureye-logo.svg" alt="AuteurEye Logo"
     className="h-6 transition-all duration-300 ease-in-out hover:scale-110 hover:drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]"
   />
             {navItems.slice(0, 2).map((item) => {
