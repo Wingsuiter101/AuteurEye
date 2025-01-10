@@ -159,10 +159,10 @@ async getEstablishedDirectors(): Promise<Director[]> {
     { language: 'ja', minVotes: 50 },  // Japanese
     { language: 'ko', minVotes: 50 },  // Korean
     { language: 'zh', minVotes: 50 },  // Chinese
-    { language: 'hi', minVotes: 20 },  // Hindi
+    { language: 'hi', minVotes: 30 },  // Hindi
     { language: 'ta', minVotes: 40 },  // Tamil
-    { language: 'te', minVotes: 30 },  // Telugu
-    { language: 'ml', minVotes: 20 },  // Malayalam
+    { language: 'te', minVotes: 50 },  // Telugu
+    { language: 'ml', minVotes: 50 },  // Malayalam
     { language: 'fr', minVotes: 50 },  // French
     { language: 'it', minVotes: 50 },  // Italian
     { language: 'de', minVotes: 50 },  // German

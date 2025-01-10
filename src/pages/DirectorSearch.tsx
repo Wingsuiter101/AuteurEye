@@ -60,15 +60,15 @@ const DirectorSearch = memo(function DirectorSearch({
               </button>
             </div>
           ) : (
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder={`Search for Director ${index + 1}`}
-              className="w-full p-3 md:p-4 rounded-lg bg-auteur-bg-card border border-auteur-neutral/20
-                       focus:border-auteur-accent focus:ring-1 focus:ring-auteur-accent/50
-                       text-sm md:text-base text-auteur-primary placeholder:text-auteur-neutral"
-            />
+<input
+  type="text"
+  value={searchQuery}
+  onChange={handleSearchChange}
+  placeholder={`Search for Director ${index + 1}`}
+  className="w-full p-4 md:p-4 rounded-lg bg-auteur-bg-card border border-auteur-neutral/20
+           focus:border-auteur-accent focus:ring-1 focus:ring-auteur-accent/50
+           text-sm md:text-base text-auteur-primary placeholder:text-auteur-neutral h-16 md:h-auto"
+/>
           )}
           {!selectedDirector && <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-auteur-neutral" />}
         </div>

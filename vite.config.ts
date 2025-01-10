@@ -6,7 +6,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
 
   plugins: [react()],
-  base: '/AuteurEye/', // Replace 'your-repo-name' with your GitHub repository name
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src")

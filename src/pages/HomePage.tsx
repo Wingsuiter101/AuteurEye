@@ -103,7 +103,7 @@ const HomePage = () => {
   const activeDirector = directors[activeIndex];
 
   return (
-    <div className="min-h-screen bg-auteur-bg">
+    <div className="min-h-screen pb-20 lg:py-20 bg-auteur-bg">
       <div className="container mx-auto px-4 py-8 max-w-full">
         <div className="grid lg:grid-cols-12 gap-4 lg:gap-8">
           {/* Director Selection Panel */}

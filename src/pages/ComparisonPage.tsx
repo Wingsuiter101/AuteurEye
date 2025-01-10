@@ -145,12 +145,12 @@ const ComparisonPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-5xl">
-      <h1 className="text-xl md:text-3xl font-bold text-center mb-6 text-auteur-primary">
+    <div className="container py-20 mx-auto px-4 max-w-5xl">
+      <h1 className=" text-xl md:text-3xl font-bold text-center mb-6 text-auteur-primary">
         Compare Directors
       </h1>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="grid md:grid-cols-2 gap-4 mb-8">
         <DirectorSearch
           index={0}
           searchQuery={searchQuery1}
