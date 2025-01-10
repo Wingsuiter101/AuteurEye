@@ -7,7 +7,7 @@ import ComparisonPage from './pages/ComparisonPage.tsx'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/AuteurEye">  {/* Add basename here */}
       <div className="min-h-screen bg-auteur-bg text-auteur-primary">
         <Navbar />
         <Routes>
