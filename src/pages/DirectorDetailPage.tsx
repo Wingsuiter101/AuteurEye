@@ -72,8 +72,8 @@ const DirectorDetailPage = () => {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
-        <div className="relative h-full container mx-auto px-4 flex flex-col justify-end pb-32 sm:pb-16">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-8">
+        <div className="relative h-full container mx-auto px-4 flex flex-col justify-start md:justify-end pb-32 sm:pb-16">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-auto">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
