@@ -77,7 +77,7 @@ const DirectorDetailPage = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-64 h-96 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto md:mx-0 
+              className="w-64 h-96 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto md:mx-0 mt-8 md:mt-0 
                          ring-4 ring-auteur-accent/20 backdrop-blur-sm"
             >
               <img
