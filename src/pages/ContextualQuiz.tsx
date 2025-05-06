@@ -350,7 +350,7 @@ const ContextualQuiz = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 py-20 min-h-screen pb-32 sm:pb-20">
       {!quizComplete && (
         <div className="text-center mb-12 mt-0 sm:mt-12">
           <h1 className="text-3xl font-bold text-auteur-primary mb-2">
