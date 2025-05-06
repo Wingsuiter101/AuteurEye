@@ -54,129 +54,100 @@ const DirectorDetailPage = () => {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-auteur-bg to-auteur-bg-dark -mt-20">
-      {/* Enhanced Hero Section */}
-      <div className="relative h-screen md:h-[70vh] overflow-hidden pt-8 md:pt-20">
-        {/* Back Button - direct child, debug background */}
-        <button
-          onClick={() => navigate(-1)}
-          className="hidden sm:flex fixed top-4 left-4 sm:top-6 sm:left-6 z-50 items-center gap-2 text-white hover:text-auteur-accent transition-colors pointer-events-auto bg-white/10 backdrop-blur-md rounded-full px-4 py-2 shadow-lg hover:bg-black/40 border border-white/20"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
-        </button>
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${getImageUrl(director.profile_path)})`,
-            filter: 'blur(8px) brightness(0.3)'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
-        <div className="container mx-auto px-4 pb-32 sm:pb-16">
+      {/* Glassmorphic Back Button for Desktop */}
+      <button
+        onClick={() => navigate(-1)}
+        className="hidden md:flex fixed top-6 left-6 z-50 items-center gap-2 text-white hover:text-auteur-accent transition-colors pointer-events-auto bg-white/20 hover:bg-black/40 backdrop-blur-lg rounded-full px-4 py-2 shadow border border-white/30"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span>Back</span>
+      </button>
+      {/* Modern Overhauled Hero Section */}
+      <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-auteur-bg">
+        {/* Blurred Background Image */}
+        <div className="absolute inset-0 z-0">
+          <div
+            className="w-full h-full bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${getImageUrl(director.profile_path)})`,
+              filter: 'blur(16px) brightness(0.4)'
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-auteur-bg/80 via-transparent to-auteur-bg/90" />
+        </div>
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-12 pb-4 md:pt-48 md:pb-16">
           {/* Mobile Layout */}
-          <div className="flex flex-col md:hidden gap-8 w-full">
-            {/* Director Image */}
-            <motion.div
-              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto mt-8 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <img
-                src={getImageUrl(director.profile_path)}
-                alt={director.name}
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-            {/* Director Info */}
-            <div className="flex-1 flex flex-col items-center text-center">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-4xl font-bold text-white mb-6"
-              >
+          <div className="block md:hidden">
+            <div className="flex flex-col items-center">
+              {/* Director Photo */}
+              <div className="w-40 aspect-[2/3] rounded-xl overflow-hidden shadow-xl border border-white/30 bg-white/20 backdrop-blur-lg mb-6">
+                <img
+                  src={getImageUrl(director.profile_path)}
+                  alt={director.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Name */}
+              <h1 className="text-3xl font-extrabold text-white mb-4 text-center drop-shadow-lg">
                 {director.name}
-              </motion.h1>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-wrap gap-6 text-auteur-primary-light mb-8 justify-center"
-              >
+              </h1>
+              {/* Info Pills */}
+              <div className="flex flex-col gap-3 justify-center items-center mb-4">
                 {director.birthday && (
-                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                    <Calendar className="text-auteur-accent" size={18} />
-                    <span>{new Date(director.birthday).toLocaleDateString()}</span>
-                  </div>
+                  <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-auteur-bg-dark/60 text-auteur-primary-light text-sm shadow border border-auteur-accent/20">
+                    <Calendar className="text-auteur-accent" size={16} />
+                    {new Date(director.birthday).toLocaleDateString()}
+                  </span>
                 )}
                 {director.place_of_birth && (
-                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                    <MapPin className="text-auteur-accent" size={18} />
-                    <span>{director.place_of_birth}</span>
-                  </div>
+                  <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-auteur-bg-dark/60 text-auteur-primary-light text-sm shadow border border-auteur-accent/20">
+                    <MapPin className="text-auteur-accent" size={16} />
+                    {director.place_of_birth}
+                  </span>
                 )}
-                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <Film className="text-auteur-accent" size={18} />
-                  <span>{director.directed_movies.length} Films</span>
-                </div>
-                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <Star className="text-auteur-accent" size={18} />
-                  <span>{avgRating.toFixed(1)} Average Rating</span>
-                </div>
-              </motion.div>
+              </div>
             </div>
           </div>
           {/* Desktop Layout */}
-          <div className="hidden md:flex flex-row items-end gap-8 w-full">
-            {/* Director Image */}
-            <motion.div
-              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-0 mt-0 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <img
-                src={getImageUrl(director.profile_path)}
-                alt={director.name}
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-            {/* Director Info */}
-            <div className="flex-1 flex flex-col items-start text-left">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-5xl lg:text-6xl font-bold text-white mb-6"
-              >
+          <div className="hidden md:grid md:grid-cols-12 md:gap-2 items-center">
+            {/* Director Photo */}
+            <div className="col-span-5 flex justify-center">
+              <div className="w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-xl border border-white/30 bg-white/20 backdrop-blur-lg flex items-center justify-center">
+                <img
+                  src={getImageUrl(director.profile_path)}
+                  alt={director.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            {/* Info */}
+            <div className="col-span-7 flex flex-col items-start max-w-2xl">
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-white mb-6 drop-shadow-lg">
                 {director.name}
-              </motion.h1>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-wrap gap-6 text-auteur-primary-light mb-8 justify-start"
-              >
-                {director.birthday && (
-                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                    <Calendar className="text-auteur-accent" size={18} />
-                    <span>{new Date(director.birthday).toLocaleDateString()}</span>
-                  </div>
-                )}
-                {director.place_of_birth && (
-                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                    <MapPin className="text-auteur-accent" size={18} />
-                    <span>{director.place_of_birth}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <Film className="text-auteur-accent" size={18} />
-                  <span>{director.directed_movies.length} Films</span>
+              </h1>
+              <div className="flex flex-wrap gap-4 mb-2">
+                <div className="flex flex-col gap-3 items-start mb-2">
+                  {director.birthday && (
+                    <span className="flex items-center gap-2 px-5 py-2 rounded-full bg-auteur-bg-dark/60 text-auteur-primary-light text-base shadow border border-auteur-accent/20">
+                      <Calendar className="text-auteur-accent" size={18} />
+                      {new Date(director.birthday).toLocaleDateString()}
+                    </span>
+                  )}
+                  {director.place_of_birth && (
+                    <span className="flex items-center gap-2 px-5 py-2 rounded-full bg-auteur-bg-dark/60 text-auteur-primary-light text-base shadow border border-auteur-accent/20">
+                      <MapPin className="text-auteur-accent" size={18} />
+                      {director.place_of_birth}
+                    </span>
+                  )}
                 </div>
-                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <Star className="text-auteur-accent" size={18} />
-                  <span>{avgRating.toFixed(1)} Average Rating</span>
-                </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        {/* Divider below hero */}
+        <div className="absolute left-0 right-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-auteur-bg" />
+      </section>
 
       {/* Statistics Grid */}
       <div className="container mx-auto px-4 -mt-8 relative z-10">
