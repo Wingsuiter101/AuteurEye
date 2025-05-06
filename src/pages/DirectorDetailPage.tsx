@@ -72,13 +72,14 @@ const DirectorDetailPage = () => {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
-        <div className="relative h-full container mx-auto px-4 flex pb-32 sm:pb-16">
-          <div className="flex flex-col md:flex-row items-start md:items-end gap-8 w-full">
+        <div className="container mx-auto px-4 pb-32 sm:pb-16">
+          {/* Mobile Layout */}
+          <div className="flex flex-col md:hidden gap-8 w-full">
             {/* Director Image */}
-            <motion.div 
+            <motion.div
+              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto mt-8 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto md:mx-0 mt-8 md:mt-0 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
             >
               <img
                 src={getImageUrl(director.profile_path)}
@@ -87,18 +88,69 @@ const DirectorDetailPage = () => {
               />
             </motion.div>
             {/* Director Info */}
-            <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-              <motion.h1 
+            <div className="flex-1 flex flex-col items-center text-center">
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
+                className="text-4xl font-bold text-white mb-6"
               >
                 {director.name}
               </motion.h1>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-wrap gap-6 text-auteur-primary-light mb-8 justify-center md:justify-start"
+                className="flex flex-wrap gap-6 text-auteur-primary-light mb-8 justify-center"
+              >
+                {director.birthday && (
+                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
+                    <Calendar className="text-auteur-accent" size={18} />
+                    <span>{new Date(director.birthday).toLocaleDateString()}</span>
+                  </div>
+                )}
+                {director.place_of_birth && (
+                  <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
+                    <MapPin className="text-auteur-accent" size={18} />
+                    <span>{director.place_of_birth}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  <Film className="text-auteur-accent" size={18} />
+                  <span>{director.directed_movies.length} Films</span>
+                </div>
+                <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  <Star className="text-auteur-accent" size={18} />
+                  <span>{avgRating.toFixed(1)} Average Rating</span>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+          {/* Desktop Layout */}
+          <div className="hidden md:flex flex-row items-end gap-8 w-full">
+            {/* Director Image */}
+            <motion.div
+              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-0 mt-0 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <img
+                src={getImageUrl(director.profile_path)}
+                alt={director.name}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            {/* Director Info */}
+            <div className="flex-1 flex flex-col items-start text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl lg:text-6xl font-bold text-white mb-6"
+              >
+                {director.name}
+              </motion.h1>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex flex-wrap gap-6 text-auteur-primary-light mb-8 justify-start"
               >
                 {director.birthday && (
                   <div className="flex items-center gap-2 bg-auteur-bg-dark/50 backdrop-blur-sm px-4 py-2 rounded-lg">
