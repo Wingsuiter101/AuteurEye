@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Film, Award, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Film, Award, Star } from 'lucide-react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { useTMDB } from '../hooks/useTMDB.ts';
 import { Director, DirectorDetails } from '../types/tmdb.ts';
@@ -180,7 +180,7 @@ const ComparisonPage = () => {
     return latestMovie - firstMovie + 1;
   };
 
-  const handleDragEnd = (event: any, info: any) => {
+  const handleDragEnd = (_event: any, info: any) => {
     const threshold = 50; // minimum distance for swipe
     const velocity = info.velocity.x;
     const offset = info.offset.x;

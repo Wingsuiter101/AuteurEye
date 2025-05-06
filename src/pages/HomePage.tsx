@@ -488,16 +488,16 @@ const HomePage = () => {
                             className="space-y-5" 
                           >
                             <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center md:justify-start"> 
-                              <div className="flex items-center gap-2 text-auteur-accent">
+                              <div className="flex items-center gap-2 text-auteur-accent whitespace-nowrap">
                                 <Film className="w-5 h-5" />
                                 <span className="text-white">{activeDirector.directed_movies.length} Films</span>
                               </div>
-                              <div className="flex items-center gap-2 text-auteur-accent">
+                              <div className="flex items-center gap-2 text-auteur-accent whitespace-nowrap">
                                 <Star className="w-5 h-5" />
                                 <span className="text-white">{calculateAvgRating(activeDirector).toFixed(1)} Avg Rating</span>
                               </div>
                               {getCareerSpan(activeDirector) && (
-                                <div className="flex items-center gap-2 text-auteur-accent">
+                                <div className="flex items-center gap-2 text-auteur-accent whitespace-nowrap">
                                   <Clock className="w-5 h-5" />
                                   <span className="text-white">{getCareerSpan(activeDirector)}</span>
                                 </div>
