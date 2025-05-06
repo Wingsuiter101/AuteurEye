@@ -72,7 +72,7 @@ const DirectorDetailPage = () => {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
-        <div className="relative h-full container mx-auto px-4 flex items-end pb-32 sm:pb-16">
+        <div className="relative h-full container mx-auto px-4 flex pb-32 sm:pb-16">
           <div className="flex flex-col md:flex-row items-start md:items-end gap-8 w-full">
             {/* Director Image */}
             <motion.div 
