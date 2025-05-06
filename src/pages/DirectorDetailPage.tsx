@@ -73,12 +73,12 @@ const DirectorDetailPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
         <div className="relative h-full container mx-auto px-4 flex items-end pb-32 sm:pb-16">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full">
+          <div className="flex flex-col md:flex-row items-start md:items-end gap-8 w-full">
+            {/* Director Image */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-64 h-96 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto md:mx-0 mt-8 md:mt-0 
-                         ring-4 ring-auteur-accent/20 backdrop-blur-sm"
+              className="w-64 h-96 min-w-64 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 mx-auto md:mx-0 mt-8 md:mt-0 ring-4 ring-auteur-accent/20 backdrop-blur-sm"
             >
               <img
                 src={getImageUrl(director.profile_path)}
@@ -86,6 +86,7 @@ const DirectorDetailPage = () => {
                 className="w-full h-full object-cover"
               />
             </motion.div>
+            {/* Director Info */}
             <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
