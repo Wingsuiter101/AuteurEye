@@ -1,8 +1,8 @@
 // d:\auteur-eye\src\services\__tests__\movieRecommendation.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MovieRecommendationService, DirectorPreferenceProfile, MovieScore } from '../movieRecommendation';
-import { QuizService, QuizOption } from '../quizService';
-import type { Movie, KeywordData, Keyword, DirectorDetails } from '../../types/tmdb'; 
+import { MovieRecommendationService, DirectorPreferenceProfile } from '../movieRecommendation';
+import type { Movie } from '../../types/tmdb'; 
+import type { QuizOption } from '../quizService';
 
 // Mock QuizService
 vi.mock('../quizService');

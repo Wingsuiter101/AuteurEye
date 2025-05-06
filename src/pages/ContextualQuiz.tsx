@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Film, Star, Camera, BookOpen, PenTool, Award, User } from 'lucide-react';
+import { Film, Star, Camera, BookOpen, PenTool, User } from 'lucide-react';
 import { useTMDB } from '../hooks/useTMDB';
 import { MovieRecommendationService, DirectorPreferenceProfile, MovieScore } from '../services/movieRecommendation';
 import { QuizService, QuizOption } from '../services/quizService'; 
@@ -212,7 +212,7 @@ const ContextualQuiz = () => {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {recommendations.map((movieScore, index) => (
+          {recommendations.map((movieScore) => (
             <motion.div
               key={movieScore.movie.id}
               whileHover={{ y: -4, scale: 1.02 }}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTMDB } from '../hooks/useTMDB';
 import { motion } from 'framer-motion';
-import { Film, Star, Calendar, Clock, Users, ArrowLeft } from 'lucide-react';
+import { Star, Calendar, Clock, Users, ArrowLeft } from 'lucide-react';
 
 const MovieDetailPage = () => {
   const { id } = useParams();
@@ -317,7 +317,7 @@ const MovieDetailPage = () => {
           >
             <h2 className="text-xl md:text-2xl font-bold text-auteur-primary mb-4 md:mb-6">Cast</h2>
             <div className="divide-y divide-auteur-neutral/10">
-              {movie.credits?.cast?.slice(0, 5).map((actor: any, idx: number) => (
+              {movie.credits?.cast?.slice(0, 5).map((actor: any) => (
                 <div key={actor.id} className="flex items-center gap-4 py-3">
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-auteur-neutral/20">
                     {actor.profile_path ? (
@@ -353,7 +353,7 @@ const MovieDetailPage = () => {
               {movie.credits?.crew
                 ?.filter((member: any) => member.job !== 'Director')
                 ?.slice(0, 5)
-                .map((member: any, idx: number) => (
+                .map((member: any) => (
                   <div key={member.id} className="flex items-center gap-4 py-3">
                     <div className="w-12 h-12 rounded-full overflow-hidden bg-auteur-neutral/20">
                       {member.profile_path ? (

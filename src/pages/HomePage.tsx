@@ -9,7 +9,7 @@ const CACHE_KEY = 'auteureye_directors_cache';
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 
 const HomePage = () => {
-  const { loading, getDirectorDetails, getImageUrl, getEstablishedDirectors } = useTMDB();
+  const { getDirectorDetails, getImageUrl, getEstablishedDirectors } = useTMDB();
   const [directors, setDirectors] = useState<DirectorDetails[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const navigate = useNavigate();
