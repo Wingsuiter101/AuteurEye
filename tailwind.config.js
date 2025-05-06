@@ -78,13 +78,12 @@ export default {
   		},
   		fontFamily: {
   			sans: [
-  				'Inter',
+  				'Manrope',
   				'system-ui',
   				'sans-serif'
   			],
   			display: [
-  				'Montserrat',
-  				'Inter',
+  				'Manrope',
   				'system-ui',
   				'sans-serif'
   			],

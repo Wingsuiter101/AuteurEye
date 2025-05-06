@@ -1,6 +1,6 @@
 // src/hooks/useTMDB.ts
 import { useState, useCallback } from 'react';
-import { Director, DirectorDetails } from '../types/tmdb.ts';
+import { Director, DirectorDetails, Movie } from '../types/tmdb.ts';
 import { tmdbService } from '../services/tmdb.ts';
 
 interface UseTMDBReturn {
@@ -9,9 +9,12 @@ interface UseTMDBReturn {
   searchDirectors: (query: string) => Promise<Director[]>;
   getDirectorDetails: (id: number) => Promise<DirectorDetails>;
   getPopularDirectors: (page?: number) => Promise<Director[]>;
-  getEstablishedDirectors: () => Promise<Director[]>;  // Add this
+  getEstablishedDirectors: () => Promise<Director[]>;
   compareDirectors: (id1: number, id2: number) => Promise<any>;
   getImageUrl: (path: string | null, size?: string) => string | undefined;
+  getTopRatedMovies: (page?: number) => Promise<Movie[]>;
+  getMovieCredits: (movieId: number) => Promise<any>;
+  getMovieDetails: (movieId: number) => Promise<any>;
 }
 
 export const useTMDB = (): UseTMDBReturn => {
@@ -52,10 +55,22 @@ export const useTMDB = (): UseTMDBReturn => {
   const compareDirectors = useCallback((id1: number, id2: number) => {
     return handleRequest(() => tmdbService.compareDirectors(id1, id2));
   }, []);
-  
+
   const getImageUrl = useCallback((path: string | null, size?: string): string | undefined => {
     const result = tmdbService.getImageUrl(path, size);
-    return result || undefined;  // Convert null to undefined
+    return result || undefined;
+  }, []);
+
+  const getTopRatedMovies = useCallback((page?: number) => {
+    return handleRequest(() => tmdbService.getTopRatedMovies(page));
+  }, []);
+
+  const getMovieCredits = useCallback((movieId: number) => {
+    return handleRequest(() => tmdbService.getMovieCredits(movieId));
+  }, []);
+
+  const getMovieDetails = useCallback((movieId: number) => {
+    return handleRequest(() => tmdbService.getMovieDetails(movieId));
   }, []);
 
   return {
@@ -63,9 +78,12 @@ export const useTMDB = (): UseTMDBReturn => {
     error,
     searchDirectors,
     getDirectorDetails,
-    getEstablishedDirectors,  // Add this
-    getPopularDirectors,  // You can remove this if you want
+    getEstablishedDirectors,
+    getPopularDirectors,
     compareDirectors,
-    getImageUrl
+    getImageUrl,
+    getTopRatedMovies,
+    getMovieCredits,
+    getMovieDetails
   };
 };

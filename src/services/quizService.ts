@@ -1,24 +1,21 @@
-import { DirectorDetails, Movie } from '../types/tmdb';
+import { DirectorPreferenceProfile } from './movieRecommendation';
 
-interface QuizQuestion {
+// Interfaces (ensure these match usage)
+export interface QuizOption {
   id: number;
-  type: string;
+  text: string;
+  preferenceKey: keyof Omit<DirectorPreferenceProfile, 'eras'>;
+  styleKeywords: string[];
+}
+
+export interface QuizQuestion {
+  id: number;
+  type: string; // e.g., 'visualStyle', 'narrativeStyle', 'theme'
   text: string;
   options: QuizOption[];
 }
 
-interface QuizOption {
-  id: number;
-  text: string;
-  directorialStyle: string[];
-  director?: DirectorDetails;
-  movies?: Movie[];
-}
-
-/**
- * Define a base structure for question templates so that
- * you can easily add or remove categories or style sets.
- */
+// Define internal types used by the QuizService
 interface QuestionTemplate {
   type: string;
   text: string;
@@ -28,35 +25,310 @@ interface QuestionTemplate {
   }>;
 }
 
-interface DirectorScore {
-  director: DirectorDetails;
-  score: number;
-  region: string;
-  matchedStyles: string[];
-}
-
 /**
  * A reusable array of question “templates” for easy extension and modification.
  */
+// Additional templates for more variety
+const ADDITIONAL_QUESTION_TEMPLATES: QuestionTemplate[] = [
+  // Note: World cinema preferences are now integrated into other questions rather than having a dedicated question
+  // Film style questions
+  {
+    type: 'directing_style',
+    text: 'Which filmmaking approach do you appreciate most?',
+    styleOptions: [
+      {
+        style: ['auteur', 'personal', 'distinctive', 'french-new-wave'],
+        description: 'Directors with a strong personal vision and distinctive stylistic signatures.'
+      },
+      {
+        style: ['technical', 'precise', 'meticulous', 'asian'],
+        description: 'Technical perfectionists who craft every frame with meticulous precision.'
+      },
+      {
+        style: ['improvisational', 'spontaneous', 'naturalistic', 'italian-neorealism'],
+        description: 'Filmmakers who embrace spontaneity and capture natural, unplanned moments.'
+      },
+      {
+        style: ['collaborative', 'ensemble', 'actor-focused', 'european'],
+        description: 'Directors who prioritize performances and collaborative creative processes.'
+      },
+      {
+        style: ['innovative', 'experimental', 'boundary-pushing', 'korean-cinema'],
+        description: 'Boundary-pushers who experiment with new techniques and approaches.'
+      }
+    ]
+  },
+  {
+    type: 'pacing_preference',
+    text: 'What kind of pacing do you prefer in films?',
+    styleOptions: [
+      {
+        style: ['deliberate', 'contemplative', 'slow'],
+        description: 'Slow, deliberate pacing that allows scenes to breathe and develop naturally.'
+      },
+      {
+        style: ['balanced', 'rhythmic', 'measured'],
+        description: 'Well-balanced pacing with a natural rhythm between action and reflection.'
+      },
+      {
+        style: ['energetic', 'dynamic', 'fast'],
+        description: 'Quick, energetic pacing that keeps the story moving forward constantly.'
+      },
+      {
+        style: ['tension-building', 'suspenseful', 'escalating'],
+        description: 'Gradually escalating tension that builds toward powerful climactic moments.'
+      },
+      {
+        style: ['episodic', 'vignette', 'anthology'],
+        description: 'Episodic structure with distinct segments or chapters that form a larger whole.'
+      }
+    ]
+  },
+  {
+    type: 'dialogue_preference',
+    text: 'What type of dialogue resonates with you most?',
+    styleOptions: [
+      {
+        style: ['witty', 'clever', 'sharp'],
+        description: 'Sharp, witty dialogue with clever wordplay and rapid exchanges.'
+      },
+      {
+        style: ['naturalistic', 'authentic', 'realistic'],
+        description: 'Naturalistic conversations that capture how people really speak.'
+      },
+      {
+        style: ['minimal', 'visual', 'sparse'],
+        description: 'Minimal dialogue that lets visuals and actions tell the story.'
+      },
+      {
+        style: ['poetic', 'lyrical', 'philosophical'],
+        description: 'Poetic, lyrical dialogue that explores deeper meanings and ideas.'
+      },
+      {
+        style: ['stylized', 'distinctive', 'unique'],
+        description: 'Highly stylized dialogue with distinctive rhythms and vocabulary.'
+      }
+    ]
+  },
+  {
+    type: 'conflict_preference',
+    text: 'What kind of conflict or tension draws you into a story?',
+    styleOptions: [
+      {
+        style: ['internal', 'psychological', 'character'],
+        description: 'Internal conflicts where characters struggle with their own nature or choices.'
+      },
+      {
+        style: ['interpersonal', 'relationship', 'social'],
+        description: 'Tensions between characters and their complex relationships.'
+      },
+      {
+        style: ['societal', 'systemic', 'political'],
+        description: 'Conflicts that explore larger social systems and political realities.'
+      },
+      {
+        style: ['existential', 'philosophical', 'cosmic'],
+        description: 'Existential struggles against larger forces or questions of meaning.'
+      },
+      {
+        style: ['physical', 'survival', 'action'],
+        description: 'Physical conflicts and survival scenarios with tangible stakes.'
+      }
+    ]
+  },
+  {
+    type: 'ending_preference',
+    text: 'What kind of ending tends to stay with you?',
+    styleOptions: [
+      {
+        style: ['ambiguous', 'open-ended', 'interpretive'],
+        description: 'Ambiguous endings that leave room for interpretation and discussion.'
+      },
+      {
+        style: ['resolution', 'closure', 'satisfying'],
+        description: 'Clear resolutions that provide a sense of closure and satisfaction.'
+      },
+      {
+        style: ['twist', 'surprising', 'revelatory'],
+        description: 'Surprising twists that recontextualize everything that came before.'
+      },
+      {
+        style: ['emotional', 'cathartic', 'moving'],
+        description: 'Emotional conclusions that provide catharsis and emotional impact.'
+      },
+      {
+        style: ['cyclical', 'thematic', 'reflective'],
+        description: 'Cyclical endings that reflect back on the beginning in meaningful ways.'
+      }
+    ]
+  },
+  {
+    type: 'genre_preference',
+    text: 'Which film genre do you find yourself drawn to most often?',
+    styleOptions: [
+      {
+        style: ['sci-fi', 'futuristic', 'technological'],
+        description: 'Science fiction that explores future technologies and their impact on humanity.'
+      },
+      {
+        style: ['horror', 'suspense', 'psychological'],
+        description: 'Horror and suspense that delves into fear and the darker aspects of human psychology.'
+      },
+      {
+        style: ['drama', 'emotional', 'character-driven'],
+        description: 'Character-driven dramas that explore complex human emotions and relationships.'
+      },
+      {
+        style: ['comedy', 'humor', 'satire'],
+        description: 'Comedies that make you laugh while often providing social commentary.'
+      },
+      {
+        style: ['action', 'adventure', 'thrilling'],
+        description: 'Action-packed adventures with excitement, stunts, and adrenaline.'
+      },
+      {
+        style: ['fantasy', 'magical', 'imaginative'],
+        description: 'Fantasy worlds filled with magic, mythical creatures, and extraordinary possibilities.'
+      }
+    ]
+  },
+  {
+    type: 'narrative_preference',
+    text: 'What kind of story structure appeals to you most?',
+    styleOptions: [
+      {
+        style: ['hero-journey', 'transformation', 'quest'],
+        description: 'Classic hero journey where a protagonist overcomes challenges and transforms.'
+      },
+      {
+        style: ['ensemble', 'multiple-perspectives', 'interconnected'],
+        description: 'Ensemble stories with multiple characters whose lives and stories intertwine.'
+      },
+      {
+        style: ['mystery', 'puzzle', 'revelation'],
+        description: 'Mysteries that gradually reveal their secrets, keeping you guessing until the end.'
+      },
+      {
+        style: ['character-study', 'psychological', 'introspective'],
+        description: 'Deep character studies that explore the inner workings of complex individuals.'
+      },
+      {
+        style: ['episodic', 'anthology', 'vignette'],
+        description: 'Episodic narratives that present a series of connected but distinct stories.'
+      }
+    ]
+  },
+  {
+    type: 'thematic_interest',
+    text: 'Which themes or subjects do you find most compelling in film?',
+    styleOptions: [
+      {
+        style: ['existential', 'philosophical', 'meaning', 'french-new-wave', 'european'],
+        description: 'Existential questions about the meaning of life and human existence.'
+      },
+      {
+        style: ['social-justice', 'political', 'activism', 'latin-american', 'political'],
+        description: 'Social and political issues that challenge the status quo and advocate for change.'
+      },
+      {
+        style: ['identity', 'self-discovery', 'coming-of-age', 'japanese-cinema', 'contemplative'],
+        description: 'Personal journeys of identity formation and self-discovery.'
+      },
+      {
+        style: ['relationships', 'love', 'connection', 'bollywood', 'musical'],
+        description: 'The complexities of human relationships, love, and interpersonal connections.'
+      },
+      {
+        style: ['power', 'conflict', 'struggle', 'korean-cinema', 'social-realism'],
+        description: 'Power dynamics, conflict, and the struggle against oppressive forces.'
+      },
+      {
+        style: ['mortality', 'loss', 'grief', 'scandinavian', 'minimalist'],
+        description: 'Confrontations with mortality, loss, and the process of grief.'
+      }
+    ]
+  },
+  {
+    type: 'setting_preference',
+    text: 'In what kind of setting or world do you prefer stories to unfold?',
+    styleOptions: [
+      {
+        style: ['urban', 'city', 'metropolitan'],
+        description: 'Bustling urban environments with their energy, diversity, and hidden corners.'
+      },
+      {
+        style: ['rural', 'small-town', 'pastoral'],
+        description: 'Small towns or rural settings where community and tradition shape lives.'
+      },
+      {
+        style: ['historical', 'period', 'past'],
+        description: 'Historical periods that transport you to different times and contexts.'
+      },
+      {
+        style: ['futuristic', 'dystopian', 'utopian'],
+        description: 'Future worlds that imagine what might become of human civilization.'
+      },
+      {
+        style: ['fantastical', 'otherworldly', 'surreal'],
+        description: 'Fantastical realms that operate by their own magical or surreal logic.'
+      },
+      {
+        style: ['intimate', 'confined', 'minimalist'],
+        description: 'Intimate, confined spaces where character dynamics intensify.'
+      }
+    ]
+  },
+  {
+    type: 'emotional_response',
+    text: 'What emotional experience do you value most when watching a film?',
+    styleOptions: [
+      {
+        style: ['suspense', 'tension', 'anticipation'],
+        description: 'The thrill of suspense and tension that keeps you on the edge of your seat.'
+      },
+      {
+        style: ['catharsis', 'emotional-release', 'moving'],
+        description: 'Emotional catharsis that allows you to process deep feelings through art.'
+      },
+      {
+        style: ['intellectual', 'thought-provoking', 'challenging'],
+        description: 'Intellectual stimulation that challenges your thinking and perspectives.'
+      },
+      {
+        style: ['escapism', 'entertainment', 'fun'],
+        description: 'Pure entertainment that provides escape and enjoyment.'
+      },
+      {
+        style: ['inspiration', 'uplifting', 'hopeful'],
+        description: 'Inspiration and hope that affirms positive human potential.'
+      },
+      {
+        style: ['discomfort', 'provocative', 'unsettling'],
+        description: 'Provocative discomfort that pushes boundaries and challenges comfort zones.'
+      }
+    ]
+  }
+];
+
 const QUESTION_TEMPLATES: QuestionTemplate[] = [
   {
     type: 'visual_style',
     text: 'Which approach to cinematography captivates you most?',
     styleOptions: [
       {
-        style: ['symmetrical', 'meticulous', 'controlled'],
+        style: ['symmetrical', 'meticulous', 'controlled', 'japanese-cinema'],
         description: 'Perfect symmetry and geometrically composed frames, where every element is meticulously placed.'
       },
       {
-        style: ['naturalistic', 'observational', 'intimate'],
+        style: ['naturalistic', 'observational', 'intimate', 'scandinavian'],
         description: 'Raw, intimate camera work that feels like you are witnessing real moments unfold.'
       },
       {
-        style: ['poetic', 'atmospheric', 'ethereal'],
+        style: ['poetic', 'atmospheric', 'ethereal', 'asian'],
         description: 'Dreamy, atmospheric visuals where light and shadow tell their own story.'
       },
       {
-        style: ['kinetic', 'dynamic', 'innovative'],
+        style: ['kinetic', 'dynamic', 'innovative', 'hong-kong'],
         description: 'Bold, innovative camera movements that make you feel part of the action.'
       }
     ]
@@ -88,19 +360,19 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     text: 'Which storytelling tradition speaks to you?',
     styleOptions: [
       {
-        style: ['metaphorical', 'layered', 'symbolic'],
+        style: ['metaphorical', 'layered', 'symbolic', 'latin-american', 'magical-realism'],
         description: 'Narratives rich in metaphor and symbolism, where meaning unfolds gradually.'
       },
       {
-        style: ['social', 'humanist', 'observational'],
+        style: ['social', 'humanist', 'observational', 'italian-neorealism', 'social-realism'],
         description: 'Intimate portraits of society that reveal universal human experiences.'
       },
       {
-        style: ['genre_blending', 'innovative', 'hybrid'],
+        style: ['genre_blending', 'innovative', 'hybrid', 'korean-cinema', 'genre-bending'],
         description: 'Bold mixing of genres and cultural elements to create something unique.'
       },
       {
-        style: ['classical', 'archetypal', 'mythological'],
+        style: ['classical', 'archetypal', 'mythological', 'bollywood', 'indian'],
         description: 'Stories drawing from classical traditions and mythological themes.'
       }
     ]
@@ -173,523 +445,140 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
   }
 ];
 
+// Mapping from question template type to preference profile key
+const TEMPLATE_TYPE_TO_PROFILE_KEY: Record<string, keyof Omit<DirectorPreferenceProfile, 'eras'>> = {
+  // Original mappings
+  'visual_style': 'visualStyles',
+  'visual_tone': 'visualStyles',
+  'cultural_approach': 'themes',
+  'time_structure': 'narrativeStyles',
+  'sound_approach': 'themes',
+  'character_approach': 'narrativeStyles',
+  
+  // New mappings for additional templates
+  'genre_preference': 'themes',
+  'narrative_preference': 'narrativeStyles',
+  'thematic_interest': 'themes',
+  'setting_preference': 'visualStyles',
+  'emotional_response': 'themes',
+  'world_cinema_preference': 'themes', // World cinema preference added
+  
+  // Additional new mappings
+  'directing_style': 'visualStyles',
+  'pacing_preference': 'narrativeStyles',
+  'dialogue_preference': 'narrativeStyles',
+  'conflict_preference': 'themes',
+  'ending_preference': 'narrativeStyles'
+};
+
 export class QuizService {
   /**
-   * Generate a dynamic set of quiz questions using the provided directors.
-   * @param directors a list of directors (with their filmographies)
+   * Generate a dynamic set of quiz questions based on abstract styles and themes.
    * @param questionCount how many questions to generate (default = 5)
    * @param optionCount how many options per question (default = 4)
-   * @param avoidDirectorRepeats avoid reusing the same director across multiple questions? (default = true)
    */
   generateQuestions(
-    directors: DirectorDetails[],
     questionCount = 5,
     optionCount = 4,
-    avoidDirectorRepeats = true
   ): QuizQuestion[] {
     const questions: QuizQuestion[] = [];
-    // Global set of used Director IDs (if we want to avoid repeats across the entire quiz)
-    const usedDirectorIdsGlobal = new Set<number>();
 
-    // 1. Create questions from the base config (QUESTION_TEMPLATES).
-    //    Each template yields exactly 1 question.
-    QUESTION_TEMPLATES.forEach((template) => {
+    // 1. Combine original and additional templates
+    const allTemplates = [...QUESTION_TEMPLATES, ...ADDITIONAL_QUESTION_TEMPLATES];
+    
+    // 2. Group templates by category to ensure balanced selection
+    const visualTemplates = allTemplates.filter(t => 
+      TEMPLATE_TYPE_TO_PROFILE_KEY[t.type] === 'visualStyles'
+    );
+    const narrativeTemplates = allTemplates.filter(t => 
+      TEMPLATE_TYPE_TO_PROFILE_KEY[t.type] === 'narrativeStyles'
+    );
+    const themeTemplates = allTemplates.filter(t => 
+      TEMPLATE_TYPE_TO_PROFILE_KEY[t.type] === 'themes'
+    );
+    
+    // 3. Shuffle each category independently
+    const shuffledVisual = this.shuffleArray(visualTemplates);
+    const shuffledNarrative = this.shuffleArray(narrativeTemplates);
+    const shuffledThemes = this.shuffleArray(themeTemplates);
+    
+    // 4. Calculate how many questions to take from each category
+    // Ensure balanced representation with slight emphasis on themes
+    const visualCount = Math.floor(questionCount * 0.3);
+    const narrativeCount = Math.floor(questionCount * 0.3);
+    const themeCount = questionCount - visualCount - narrativeCount;
+    
+    // 5. Take the calculated number from each category
+    const selectedTemplates = [
+      ...shuffledVisual.slice(0, visualCount),
+      ...shuffledNarrative.slice(0, narrativeCount),
+      ...shuffledThemes.slice(0, themeCount)
+    ];
+    
+    // 6. Shuffle the final selection to mix up the categories
+    const finalShuffledTemplates = this.shuffleArray(selectedTemplates);
+    
+    // 7. Generate questions from the balanced, shuffled templates
+    for (const template of finalShuffledTemplates) {
+      const preferenceKey = TEMPLATE_TYPE_TO_PROFILE_KEY[template.type];
+      if (!preferenceKey) {
+        console.warn(`No preference key mapping found for question template type: ${template.type}`);
+        continue; // Skip this template if no mapping exists
+      }
+
+      // For each question, randomly select between 4-5 options to show
+      const thisQuestionOptionCount = Math.random() > 0.5 ? optionCount : optionCount + 1;
+      
       const question: QuizQuestion = {
         id: questions.length + 1,
         type: template.type,
         text: template.text,
-        options: this.generateDirectorStyleOptions(
-          directors,
+        options: this.generateAbstractStyleOptions(
           template.styleOptions,
-          optionCount,
-          avoidDirectorRepeats,
-          usedDirectorIdsGlobal
+          preferenceKey,
+          thisQuestionOptionCount
         )
       };
+      
       // If we actually ended up with zero valid options, skip adding the question
       if (question.options.length > 0) {
         questions.push(question);
       }
-    });
+    }
 
-    // 2. Dynamically add an "Era" question, if we have enough directors in each group
-    const eraGroups = this.groupDirectorsByEra(directors);
-    const eraQuestions = this.generateEraQuestions(
-      eraGroups,
-      optionCount,
-      avoidDirectorRepeats,
-      usedDirectorIdsGlobal
-    );
-    questions.push(...eraQuestions);
+    // 3. Era Questions Removed - Was director-dependent
 
-    // 3. Shuffle and slice to the requested questionCount
-    const finalQuestions = this.shuffleArray(questions).slice(0, questionCount);
+    // 4. No need to shuffle/slice questions array anymore, shuffling happened at template level
+    // const finalQuestionCount = Math.min(questionCount, questions.length);
+    // const finalQuestions = this.shuffleArray(questions).slice(0, finalQuestionCount);
 
-    return finalQuestions;
+    return questions; // Return the generated questions
   }
 
   /**
-   * Convert an array of style options (like [ { style: [...], description: '...' }, ... ])
-   * into a set of QuizOptions, matched to appropriate directors.
+   * Generates QuizOptions directly from style definitions without directors.
    */
-  private generateDirectorStyleOptions(
-    directors: DirectorDetails[],
+  private generateAbstractStyleOptions(
     styles: Array<{ style: string[], description: string }>,
-    optionCount: number = 4,
-    avoidDirectorRepeats: boolean = true,
-    usedDirectorIdsGlobal: Set<number> = new Set()
-): QuizOption[] {
+    preferenceKey: keyof Omit<DirectorPreferenceProfile, 'eras'>,
+    optionCount: number = 4
+  ): QuizOption[] {
     const options: QuizOption[] = [];
 
-    for (const style of styles) {
-        // Get matching directors using our improved matching function
-        const matchedDirectors = this.findDirectorsMatchingStyle(
-            directors, 
-            style.style,
-            usedDirectorIdsGlobal
-        );
+    // Shuffle the styles to provide variety in options presented
+    const shuffledStyles = this.shuffleArray(styles);
 
-        if (matchedDirectors.length > 0) {
-            // Take the highest scoring director that hasn't been used
-            const selectedDirector = matchedDirectors[0].director;
-            
-            options.push({
-                id: options.length + 1,
-                text: style.description,
-                directorialStyle: style.style,
-                director: selectedDirector,
-                movies: selectedDirector.directed_movies.slice(0, 2)
-            });
+    for (const style of shuffledStyles) {
+      if (options.length >= optionCount) break;
 
-            if (avoidDirectorRepeats) {
-                usedDirectorIdsGlobal.add(selectedDirector.id);
-            }
-        }
-
-        if (options.length >= optionCount) break;
+      options.push({
+          id: options.length + 1,
+          text: style.description,
+          preferenceKey: preferenceKey,
+          styleKeywords: style.style
+      });
     }
-
     return options;
-}
-  /**
-   * Dynamically generate questions based on the directors' first notable film era.
-   * If an era group has at least `optionCount` directors, create a question with up to that many directors.
-   */
-  private generateEraQuestions(
-    eraGroups: { [key: string]: DirectorDetails[] },
-    optionCount: number,
-    avoidDirectorRepeats: boolean,
-    usedDirectorIdsGlobal: Set<number>
-  ): QuizQuestion[] {
-    const eraQuestions: QuizQuestion[] = [];
-    Object.entries(eraGroups).forEach(([era, groupDirectors]) => {
-      // Filter out directors already used (if we're avoiding repeats)
-      if (avoidDirectorRepeats) {
-        groupDirectors = groupDirectors.filter(
-          (dir) => !usedDirectorIdsGlobal.has(dir.id)
-        );
-      }
-
-      if (groupDirectors.length >= optionCount) {
-        // Example question for this era
-        // We'll pick the top `optionCount` or fewer if we want
-        const chosenDirectors = groupDirectors.slice(0, optionCount);
-
-        eraQuestions.push({
-          id: Math.floor(Math.random() * 10000),
-          type: 'era',
-          text: `Which ${era} director's approach interests you most?`,
-          options: chosenDirectors.map((director, index) => {
-            // Mark them as used (if avoiding repeats)
-            if (avoidDirectorRepeats) {
-              usedDirectorIdsGlobal.add(director.id);
-            }
-            return {
-              id: index + 1,
-              text: `${director.name} - Known for ${this.getNotableWorks(director)}`,
-              directorialStyle: this.inferDirectorStyle(director),
-              director: director,
-              movies: director.directed_movies.slice(0, 2)
-            };
-          })
-        });
-      }
-    });
-    return eraQuestions;
-  }
-
-  /**
-   * Find directors matching a given set of style tags.
-   * This includes region-based and filmography-based heuristics.
-   */
-  private findDirectorsMatchingStyle(
-    directors: DirectorDetails[],
-    targetStyles: string[],
-    excludeDirectorIds: Set<number> = new Set()
-  ): DirectorScore[] {
-    // First, group directors by region for diversity
-    const regionalGroups = this.groupDirectorsByRegion(directors);
-    
-    // Score each director
-    const scoredDirectors = Object.entries(regionalGroups).flatMap(([region, regionDirectors]) =>
-      regionDirectors
-        .filter(director => !excludeDirectorIds.has(director.id))
-        .map(director => {
-          const score = this.calculateDirectorStyleScore(director, targetStyles);
-          return {
-            director,
-            score: score.score,
-            region,
-            matchedStyles: score.matchedStyles
-          };
-        })
-    );
-  
-    // Sort by score but ensure regional diversity
-    return this.diversifyDirectorSelection(scoredDirectors);
-  }
-
-  private calculateDirectorStyleScore(
-    director: DirectorDetails,
-    targetStyles: string[]
-  ): { score: number; matchedStyles: string[] } {
-    let score = 0;
-    const matchedStyles: string[] = [];
-    const directorGenres = new Set(
-      director.directed_movies.flatMap(m => m.genres.map(g => g.name))
-    );
-  
-    // Base metrics
-    const avgRating = director.directed_movies.reduce((sum, m) => sum + m.vote_average, 0) / 
-                     director.directed_movies.length || 0;
-    const hasMultipleFilms = director.directed_movies.length >= 2;
-    const hasHighRatings = avgRating >= 7.0;
-    const hasRecognition = director.directed_movies.some(m => 
-      m.vote_count >= 500 && m.vote_average >= 6.8
-    );
-  
-    // Match each target style
-    targetStyles.forEach(style => {
-      switch (style) {
-        // Visual Style
-        case 'symmetrical':
-        case 'meticulous':
-        case 'controlled':
-          if ((directorGenres.has('Drama') || directorGenres.has('Animation')) && hasHighRatings) {
-            score += 2;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'naturalistic':
-        case 'observational':
-        case 'intimate':
-          if (directorGenres.has('Documentary') || 
-              (directorGenres.has('Drama') && !directorGenres.has('Fantasy'))) {
-            score += 2;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'poetic':
-        case 'atmospheric':
-        case 'ethereal':
-          if (directorGenres.has('Fantasy') || directorGenres.has('Drama')) {
-            score += 2;
-            if (hasHighRatings) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'kinetic':
-        case 'dynamic':
-        case 'innovative':
-          if (directorGenres.has('Action') || directorGenres.has('Thriller')) {
-            score += 2;
-            if (director.directed_movies.some(m => m.vote_average >= 7.5)) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        // Visual Tone
-        case 'vibrant':
-        case 'saturated':
-        case 'expressive':
-          if (directorGenres.has('Animation') || directorGenres.has('Fantasy')) {
-            score += 2;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'noir':
-        case 'contrast':
-        case 'shadows':
-          if (directorGenres.has('Thriller') || directorGenres.has('Crime')) {
-            score += 2;
-            if (directorGenres.has('Film-Noir')) score += 2;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'minimalist':
-        case 'muted':
-        case 'subtle':
-          if (directorGenres.has('Drama') && hasHighRatings) {
-            score += 2;
-            if (!directorGenres.has('Action')) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        // Cultural Approach
-        case 'metaphorical':
-        case 'layered':
-        case 'symbolic':
-          if (hasHighRatings && (directorGenres.has('Drama') || directorGenres.has('Art House'))) {
-            score += 2;
-            if (director.directed_movies.length >= 5) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'social':
-        case 'humanist':
-          if (directorGenres.has('Drama') || directorGenres.has('Documentary')) {
-            score += 2;
-            if (hasHighRatings) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'genre_blending':
-        case 'hybrid':
-          if (director.directed_movies.some(m => m.genres.length >= 3)) {
-            score += 3;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        // Time Structure
-        case 'nonlinear':
-        case 'complex':
-        case 'layered':
-          if (hasHighRatings && (directorGenres.has('Mystery') || directorGenres.has('Thriller'))) {
-            score += 2;
-            if (director.directed_movies.some(m => m.genres.length >= 2)) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'real_time':
-        case 'immediate':
-        case 'intense':
-          if (directorGenres.has('Thriller') || directorGenres.has('Action')) {
-            score += 2;
-            if (hasHighRatings) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'meditative':
-        case 'contemplative':
-        case 'slow':
-          if (directorGenres.has('Drama') && hasHighRatings) {
-            score += 2;
-            if (!directorGenres.has('Action')) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        // Sound Approach
-        case 'atmospheric':
-        case 'ambient':
-        case 'immersive':
-          if (directorGenres.has('Horror') || directorGenres.has('Science Fiction')) {
-            score += 2;
-            if (hasHighRatings) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'musical':
-        case 'scored':
-        case 'emotional':
-          if (directorGenres.has('Drama') || directorGenres.has('Musical')) {
-            score += 2;
-            if (directorGenres.has('Musical')) score += 2;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        // Character Development
-        case 'psychological':
-        case 'complex':
-        case 'internal':
-          if (directorGenres.has('Drama') && hasHighRatings) {
-            score += 2;
-            if (directorGenres.has('Thriller')) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'ensemble':
-        case 'interconnected':
-        case 'social':
-          if (hasHighRatings && director.directed_movies.some(m => m.vote_average > 7.5)) {
-            score += 2;
-            if (directorGenres.has('Drama')) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-  
-        case 'archetypal':
-        case 'iconic':
-        case 'symbolic':
-          if (hasRecognition && hasHighRatings) {
-            score += 2;
-            if (directorGenres.has('Fantasy') || directorGenres.has('Science Fiction')) score += 1;
-            matchedStyles.push(style);
-          }
-          break;
-      }
-    });
-  
-    // Recognition and consistency bonuses
-    if (hasRecognition) score += 1;
-    if (hasMultipleFilms && hasHighRatings) score += 1;
-  
-    return { score, matchedStyles };
-  }
-  
-  private groupDirectorsByRegion(directors: DirectorDetails[]): { [key: string]: DirectorDetails[] } {
-    return {
-      eastAsia: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/japan|korea|china|hong kong|taiwan/)
-      ),
-      southAsia: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/india|pakistan|bangladesh|sri lanka/)
-      ),
-      latinAmerica: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/mexico|brazil|argentina|chile|colombia|peru/)
-      ),
-      africa: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/nigeria|south africa|senegal|kenya|egypt/)
-      ),
-      middleEast: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/iran|turkey|lebanon|israel|uae/)
-      ),
-      europe: directors.filter(d => 
-        d.place_of_birth?.toLowerCase().match(/france|italy|germany|spain|sweden|denmark/)
-      ),
-      other: directors.filter(d => 
-        !d.place_of_birth || 
-        d.place_of_birth.toLowerCase().match(/usa|uk|canada|australia/)
-      )
-    };
-  }
-  
-  private diversifyDirectorSelection(scoredDirectors: DirectorScore[]): DirectorScore[] {
-    const result: DirectorScore[] = [];
-    const usedRegions = new Set<string>();
-    
-    // Get top directors from each region first
-    ['eastAsia', 'southAsia', 'latinAmerica', 'africa', 'middleEast', 'europe', 'other'].forEach(region => {
-      const regionDirectors = scoredDirectors
-        .filter(d => d.region === region)
-        .sort((a, b) => b.score - a.score);
-      
-      if (regionDirectors.length > 0) {
-        result.push(regionDirectors[0]);
-        usedRegions.add(region);
-      }
-    });
-  
-    // Fill remaining slots with highest scoring directors
-    const remainingDirectors = scoredDirectors
-      .filter(d => !result.some(selected => selected.director.id === d.director.id))
-      .sort((a, b) => b.score - a.score);
-  
-    for (const director of remainingDirectors) {
-      if (result.length >= 4) break;
-      result.push(director);
-    }
-  
-    return result;
-  }
-  
-  private groupDirectorsByEra(directors: DirectorDetails[]): { [key: string]: DirectorDetails[] } {
-    const groups: { [key: string]: DirectorDetails[] } = {
-      'Global Cinema Classics (Pre-1970)': [],
-      'New Waves & Movements (1970s-1980s)': [],
-      'International Auteurs (1990s-2000s)': [],
-      'Contemporary Visionaries (2010s-Present)': []
-    };
-
-    directors.forEach((director) => {
-      const sortedMovies = [...director.directed_movies].sort((a, b) =>
-        new Date(a.release_date).getTime() - new Date(b.release_date).getTime()
-      );
-
-      const firstNotableMovie = sortedMovies.find((m) => m.vote_count >= 100);
-      if (!firstNotableMovie) return;
-
-      const firstMovieYear = new Date(firstNotableMovie.release_date).getFullYear();
-
-      if (firstMovieYear < 1970) {
-        groups['Global Cinema Classics (Pre-1970)'].push(director);
-      } else if (firstMovieYear < 1990) {
-        groups['New Waves & Movements (1970s-1980s)'].push(director);
-      } else if (firstMovieYear < 2010) {
-        groups['International Auteurs (1990s-2000s)'].push(director);
-      } else {
-        groups['Contemporary Visionaries (2010s-Present)'].push(director);
-      }
-    });
-
-    return groups;
-  }
-
-  /**
-   * Infer a set of broad stylistic descriptors for a director, based on their filmography.
-   */
-  private inferDirectorStyle(director: DirectorDetails): string[] {
-    const styles: string[] = [];
-    const movies = director.directed_movies;
-    const genres = new Set(movies.flatMap(m => m.genres.map(g => g.name)));
-
-    if (genres.has('Drama') && movies.some(m => m.vote_average >= 7.5)) {
-      styles.push('character_driven');
-    }
-    if (genres.has('Science Fiction') || genres.has('Fantasy')) {
-      styles.push('visionary');
-    }
-    if (genres.has('Thriller') || genres.has('Mystery')) {
-      styles.push('suspense');
-    }
-    if (movies.some(m => m.genres.length >= 3)) {
-      styles.push('genre_blending');
-    }
-    if (genres.has('Documentary') || (genres.has('Drama') && !genres.has('Fantasy'))) {
-      styles.push('naturalistic');
-    }
-    if (
-      genres.has('Animation') ||
-      (genres.has('Fantasy') && movies.some(m => m.vote_average >= 7.5))
-    ) {
-      styles.push('visual_innovation');
-    }
-
-    return styles;
-  }
-
-  /**
-   * Retrieve up to 2 top-rated movies from the director's filmography.
-   */
-  private getNotableWorks(director: DirectorDetails): string {
-    const topMovies = director.directed_movies
-      .sort((a, b) => b.vote_average - a.vote_average)
-      .slice(0, 2);
-    return topMovies.map(m => m.title).join(', ');
   }
 
   /**

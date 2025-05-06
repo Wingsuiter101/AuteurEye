@@ -1,13 +1,13 @@
 // src/types/tmdb.ts
+// Shared types for TMDB API responses
+
 export interface Cast {
     id: number;
     name: string;
     character: string;
     profile_path: string | null;
-  }
-  
-// In src/types/tmdb.ts, update the Movie interface
-// In src/types/tmdb.ts, update Movie interface
+}
+
 export interface Movie {
   id: number;
   title: string;
@@ -17,15 +17,17 @@ export interface Movie {
   vote_average: number;
   vote_count: number;
   runtime?: number;
-  original_language: string;  // Add this line
+  original_language: string;  
   genres: Array<{ id: number; name: string }>;
+  popularity?: number; // Added popularity for enhanced scoring
   credits?: {
     cast: Cast[];
     crew: any[];
   };
+  keywords: { id: number; name: string }[]; // Keywords are now always fetched
 }
-  
-  export interface Director {
+
+export interface Director {
     id: number;
     name: string;
     biography: string;
@@ -34,9 +36,25 @@ export interface Movie {
     place_of_birth: string | null;
     birthday: string | null;
     deathday: string | null;
-  }
-  
-  export interface DirectorDetails extends Director {
+}
+
+export interface DirectorDetails extends Director {
     directed_movies: Movie[];
     total_movies: number;
-  }
+    biography: string;
+}
+
+export interface Genre {
+    id: number;
+    name: string;
+}
+
+export interface KeywordData {
+    id?: number; // Movie ID or keyword ID
+    keywords: Keyword[];
+}
+
+export interface Keyword {
+    id: number;
+    name: string;
+}
