@@ -73,7 +73,7 @@ const DirectorDetailPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-auteur-bg via-auteur-bg/90 to-transparent" />
         <div className="relative h-full container mx-auto px-4 flex items-end pb-32 sm:pb-16">
-          <div className="flex flex-col md:flex-row items-center gap-8 w-full">
+          <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -86,7 +86,7 @@ const DirectorDetailPage = () => {
                 className="w-full h-full object-cover"
               />
             </motion.div>
-            <div className="flex-1 text-center md:text-left">
+            <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
