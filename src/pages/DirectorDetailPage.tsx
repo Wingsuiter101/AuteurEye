@@ -4,6 +4,9 @@ import { useTMDB } from '../hooks/useTMDB';
 import { DirectorDetails } from '../types/tmdb';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, Film, Star, Clock, Globe, ArrowLeft } from 'lucide-react';
+import placeholderMale from '../assets/placeholder-male.png';
+import placeholderFemale from '../assets/placeholder-female.png';
+import placeholderAmbiguous from '../assets/placeholder-ambiguous.png';
 
 const DirectorDetailPage = () => {
   const { id } = useParams();
@@ -69,7 +72,7 @@ const DirectorDetailPage = () => {
           <div
             className="w-full h-full bg-cover bg-center"
             style={{
-              backgroundImage: `url(${getImageUrl(director.profile_path)})`,
+              backgroundImage: `url(${director.profile_path ? getImageUrl(director.profile_path) : director.gender === 1 ? placeholderFemale : director.gender === 2 ? placeholderMale : placeholderAmbiguous})`,
               filter: 'blur(16px) brightness(0.4)'
             }}
           />
@@ -83,7 +86,7 @@ const DirectorDetailPage = () => {
               {/* Director Photo */}
               <div className="w-40 aspect-[2/3] rounded-xl overflow-hidden shadow-xl border border-white/30 bg-white/20 backdrop-blur-lg mb-6">
                 <img
-                  src={getImageUrl(director.profile_path)}
+                  src={director.profile_path ? getImageUrl(director.profile_path) : director.gender === 1 ? placeholderFemale : director.gender === 2 ? placeholderMale : placeholderAmbiguous}
                   alt={director.name}
                   className="w-full h-full object-cover"
                 />
@@ -115,7 +118,7 @@ const DirectorDetailPage = () => {
             <div className="col-span-5 flex justify-center">
               <div className="w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-xl border border-white/30 bg-white/20 backdrop-blur-lg flex items-center justify-center">
                 <img
-                  src={getImageUrl(director.profile_path)}
+                  src={director.profile_path ? getImageUrl(director.profile_path) : director.gender === 1 ? placeholderFemale : director.gender === 2 ? placeholderMale : placeholderAmbiguous}
                   alt={director.name}
                   className="w-full h-full object-cover"
                 />

@@ -36,6 +36,7 @@ export interface Director {
     place_of_birth: string | null;
     birthday: string | null;
     deathday: string | null;
+    gender?: number;
 }
 
 export interface DirectorDetails extends Director {

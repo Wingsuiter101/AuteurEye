@@ -1,9 +1,14 @@
 import { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, GitCompare, Brain } from 'lucide-react';
+import { Menu, Home, GitCompare, Brain } from 'lucide-react';
 import SearchBar from './SearchBar';
+import SocialShareBar from './SocialShareBar';
 import auteurLogo from '@/assets/auteureye-logo.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faFacebookF, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
+import Footer from './Footer';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -164,11 +169,7 @@ const Navbar = () => {
                   exit={{ rotate: 90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {isOpen ? (
-                    <X className="text-auteur-primary" />
-                  ) : (
-                    <Menu className="text-auteur-primary" />
-                  )}
+                  <Menu className="text-auteur-primary" />
                 </motion.div>
               </AnimatePresence>
             </button>
@@ -204,6 +205,44 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
+                  {/* Share options separator */}
+                  <div className="border-t border-white/10 my-2" />
+                  <div className="flex items-center justify-center gap-3 pb-2">
+                    <a
+                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Check out AuteurEye!')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+                    >
+                      <FontAwesomeIcon icon={faTwitter} className="text-auteur-primary" size="lg" />
+                    </a>
+                    <a
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+                    >
+                      <FontAwesomeIcon icon={faFacebookF} className="text-auteur-primary" size="lg" />
+                    </a>
+                    <a
+                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+                    >
+                      <FontAwesomeIcon icon={faLinkedinIn} className="text-auteur-primary" size="lg" />
+                    </a>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(window.location.href)}
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+                    >
+                      <FontAwesomeIcon icon={faLink} className="text-auteur-primary" size="lg" />
+                    </button>
+                  </div>
+                  {/* Mobile Footer */}
+                  <div className="block md:hidden">
+                    <Footer onNavLinkClick={() => setIsOpen(false)} />
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -223,6 +262,9 @@ const Navbar = () => {
           />
         )}
       </AnimatePresence>
+
+      {/* Social Share Bar */}
+      <SocialShareBar />
     </>
   );
 };
