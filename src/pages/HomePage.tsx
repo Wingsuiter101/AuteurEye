@@ -5,7 +5,6 @@ import { useTMDB } from '../hooks/useTMDB';
 import { DirectorDetails } from '../types/tmdb';
 import { Film } from 'lucide-react';
 import { Star, Clock, TrendingUp, ChevronRight, ChevronDown, Brain } from 'lucide-react';
-import favicon from '../assets/favicon.svg';
 import homeHeroBg from '../assets/home-hero-bg.png';
 import ErrorBoundary from '../components/ErrorBoundary';
 import LoadingCamera from '../components/LoadingCamera';
@@ -198,7 +197,7 @@ const HomePage: React.FC = () => {
               >
                 <span className="relative inline-block group">
                   <img 
-                    src={favicon} 
+                    src="/favicon.svg" 
                     alt="Filmstrip Icon" 
                     className="w-16 h-16 transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12 cursor-pointer group-hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.7)]"
                   />
