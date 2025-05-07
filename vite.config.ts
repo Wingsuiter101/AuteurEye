@@ -3,8 +3,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
+// Use VITE_GHPAGES env variable to control base path
+const isGitHubPages = process.env.VITE_GHPAGES === 'true';
+
 export default defineConfig({
-  base: '/AuteurEye/',  // Add this line for GitHub Pages
+  base: isGitHubPages ? '/AuteurEye/' : '/',
   plugins: [react()],
   resolve: {
     alias: {
