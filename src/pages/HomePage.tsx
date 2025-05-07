@@ -7,6 +7,7 @@ import { Film } from 'lucide-react';
 import { Star, Clock, TrendingUp, ChevronRight, ChevronDown, Brain } from 'lucide-react';
 import favicon from '../assets/favicon.svg';
 import homeHeroBg from '../assets/home-hero-bg.png';
+import LoadingCamera from '../components/LoadingCamera';
 
 const CACHE_KEY = 'auteureye_directors_cache';
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
@@ -125,14 +126,7 @@ const HomePage = () => {
   }, []);
 
   if (isLoading || !directors.length) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-auteur-bg">
-        <div className="space-y-4 text-center">
-          <div className="w-16 h-16 border-4 border-auteur-accent rounded-full border-t-transparent animate-spin mx-auto" />
-          <p className="text-auteur-primary-light animate-pulse">Discovering cinematic masters...</p>
-        </div>
-      </div>
-    );
+    return <LoadingCamera />;
   }
 
   return (

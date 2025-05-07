@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTMDB } from '../hooks/useTMDB';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Calendar, Clock, Users, ArrowLeft, Film, Tag, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Star, Calendar, Clock, Users, ArrowLeft, Tag, ChevronDown, ChevronUp } from 'lucide-react';
 
 const MovieDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { loading, error, getMovieDetails, getImageUrl } = useTMDB();
   const [movie, setMovie] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'cast' | 'crew'>('cast');
   const [showFullOverview, setShowFullOverview] = useState(false);
 
   useEffect(() => {
