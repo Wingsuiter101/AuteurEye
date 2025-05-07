@@ -200,7 +200,7 @@ const HomePage = () => {
               <Star className="w-5 h-5 text-auteur-accent" />
               Featured Directors
             </h2>
-            <Link to="/compare" className="text-sm text-auteur-accent hover:text-auteur-accent-light flex items-center gap-1">
+            <Link to="/compare" className="text-sm text-auteur-accent hover:text-auteur-accent-light flex items-center gap-1 z-10">
               <span>Compare Directors</span>
               <ChevronRight className="w-4 h-4" />
             </Link>
