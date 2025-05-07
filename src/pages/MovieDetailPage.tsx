@@ -1,42 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTMDB } from '../hooks/useTMDB';
-import { motion } from 'framer-motion';
-import { Star, Calendar, Clock, Users, ArrowLeft, Tag, ChevronDown, ChevronUp } from 'lucide-react';
-
-interface Movie {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  backdrop_path: string;
-  release_date: string;
-  runtime: number;
-  vote_average: number;
-  vote_count: number;
-  genres: { id: number; name: string }[];
-  credits: {
-    cast: Array<{
-      id: number;
-      name: string;
-      character: string;
-      profile_path: string;
-    }>;
-    crew: Array<{
-      id: number;
-      name: string;
-      job: string;
-      profile_path: string;
-    }>;
-  };
-}
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Calendar, Clock, Users, ArrowLeft, Film, Tag, ChevronDown, ChevronUp } from 'lucide-react';
 
 const MovieDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { loading, error, getMovieDetails, getImageUrl } = useTMDB();
-  const [movie, setMovie] = useState<Movie | null>(null);
-  const [expandedOverview, setExpandedOverview] = useState(false);
+  const [movie, setMovie] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'cast' | 'crew'>('cast');
+  const [showFullOverview, setShowFullOverview] = useState(false);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -177,16 +151,16 @@ const MovieDetailPage = () => {
               )}
               {/* Overview (clamped with read more) */}
               <div className={`relative max-w-xl mb-6 text-center`}>
-                <p className={`text-auteur-primary-light text-sm leading-relaxed ${expandedOverview ? '' : 'line-clamp-2'}`}>{movie.overview}</p>
+                <p className={`text-auteur-primary-light text-sm leading-relaxed ${showFullOverview ? '' : 'line-clamp-2'}`}>{movie.overview}</p>
                 {movie.overview.length > 120 && (
                   <a
                     className="mt-2 inline-flex items-center justify-center gap-2 text-auteur-accent text-sm font-bold underline underline-offset-2 cursor-pointer hover:text-auteur-accent-dark transition"
-                    onClick={() => setExpandedOverview(v => !v)}
+                    onClick={() => setShowFullOverview(v => !v)}
                     tabIndex={0}
                     role="button"
                   >
-                    {expandedOverview ? 'Show less' : 'Read more'}
-                    {expandedOverview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    {showFullOverview ? 'Show less' : 'Read more'}
+                    {showFullOverview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </a>
                 )}
               </div>
@@ -248,16 +222,16 @@ const MovieDetailPage = () => {
               )}
               {/* Overview (clamped with read more) */}
               <div className={`relative max-w-2xl mb-6`}>
-                <p className={`text-auteur-primary-light text-sm leading-relaxed ${expandedOverview ? '' : 'line-clamp-2'}`}>{movie.overview}</p>
+                <p className={`text-auteur-primary-light text-sm leading-relaxed ${showFullOverview ? '' : 'line-clamp-2'}`}>{movie.overview}</p>
                 {movie.overview.length > 120 && (
                   <a
                     className="mt-2 inline-flex items-center gap-2 text-auteur-accent text-sm font-bold underline underline-offset-2 cursor-pointer hover:text-auteur-accent-dark transition"
-                    onClick={() => setExpandedOverview(v => !v)}
+                    onClick={() => setShowFullOverview(v => !v)}
                     tabIndex={0}
                     role="button"
                   >
-                    {expandedOverview ? 'Show less' : 'Read more'}
-                    {expandedOverview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    {showFullOverview ? 'Show less' : 'Read more'}
+                    {showFullOverview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </a>
                 )}
               </div>
