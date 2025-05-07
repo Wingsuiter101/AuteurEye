@@ -63,7 +63,7 @@ const DirectorDetailPage = () => {
         <span>Back</span>
       </button>
       {/* Modern Overhauled Hero Section */}
-      <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-auteur-bg">
+      <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-auteur-bg pt-32 pb-6 md:pt-0">
         {/* Blurred Background Image */}
         <div className="absolute inset-0 z-0">
           <div

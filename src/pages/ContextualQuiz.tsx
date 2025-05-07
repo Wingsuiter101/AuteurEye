@@ -207,7 +207,7 @@ const ContextualQuiz = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-8"
       >
-        <h2 className="text-2xl font-semibold text-center text-auteur-primary">
+        <h2 className="text-2xl font-semibold text-center text-auteur-primary mt-0 md:mt-12">
           Recommendations For You
         </h2>
 
@@ -350,13 +350,13 @@ const ContextualQuiz = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20 min-h-screen pb-32 sm:pb-20">
+    <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 min-h-screen pb-32 sm:pb-20">
       {!quizComplete && (
-        <div className="text-center mb-12 mt-0 sm:mt-12">
+        <div className="text-center mb-12 mt-0 sm:mt-12 md:mt-16">
           <h1 className="text-3xl font-bold text-auteur-primary mb-2">
             Discover Your Film Style
           </h1>
-          <p className="text-auteur-neutral">
+          <p className="text-auteur-primary-light">
             Answer a few questions about your preferences to find films tailored to your taste.
           </p>
         </div>

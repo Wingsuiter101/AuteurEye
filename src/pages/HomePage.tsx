@@ -3,7 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTMDB } from '../hooks/useTMDB';
 import { DirectorDetails } from '../types/tmdb';
-import { Film, Star, Clock, TrendingUp, ChevronRight, ChevronDown, Brain } from 'lucide-react';
+import { Film } from 'lucide-react';
+import { Star, Clock, TrendingUp, ChevronRight, ChevronDown, Brain } from 'lucide-react';
+import favicon from '../assets/favicon.svg';
+import homeHeroBg from '../assets/home-hero-bg.png';
 
 const CACHE_KEY = 'auteureye_directors_cache';
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
@@ -140,21 +143,25 @@ const HomePage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="relative rounded-2xl overflow-hidden mb-12 md:mb-20 shadow-2xl"
+          style={{ backgroundImage: `url(${homeHeroBg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
         >
-          {/* Background gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-auteur-bg-dark/90 via-auteur-bg/80 to-auteur-accent/30 z-10"></div>
-          
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC40Ij48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCAzLjk4LTEuNzggMy45OC0zLjk4bC4wMi0uMDJ6TTYwIDMwYzAgMi4yMS0xLjc5IDQtNCA0cy00LTEuNzktNC00IDEuNzktNCA0LTQgNC0xLjc5IDQtNHptLTMyIDRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0tMTIgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAgMTZjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0xMiAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMzIgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bS0xNiAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptLTE2LTE2YzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMzIgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAtMzJjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzggMy45OC0zLjk4bC4wMi0uMDJ6bS0xNiAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptLTE2IDBjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0tMTYgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAgMTZjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0xNiAwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMTYgMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6Ii8+PC9nPjwvZz48L3N2Zz4=')]"></div>
-          
           <div className="relative z-20 py-12 md:py-20 px-6 md:px-12 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="inline-block mb-6 p-2 rounded-full bg-auteur-accent/20 backdrop-blur-sm border border-auteur-accent/30"
+              className="inline-block mb-6 p-2 rounded-full"
             >
-              <Film className="w-6 h-6 text-auteur-accent" />
+              <span className="relative inline-block group">
+                <img 
+                  src={favicon} 
+                  alt="Filmstrip Icon" 
+                  className="w-16 h-16 transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12 cursor-pointer group-hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.7)]"
+                />
+                <span className="pointer-events-none absolute inset-0 rounded-full overflow-hidden">
+                  <span className="absolute left-[-75%] top-0 w-1/2 h-full bg-gradient-to-r from-white/60 to-transparent opacity-0 group-hover:opacity-80 group-hover:animate-shine" />
+                </span>
+              </span>
             </motion.div>
             
             <motion.h1 

@@ -31,7 +31,7 @@ export default {
   				},
   				neutral: {
   					light: '#4B5563',
-  					DEFAULT: '#374151',
+  					DEFAULT: '#a4b3cb',
   					dark: '#1F2937'
   				}
   			},

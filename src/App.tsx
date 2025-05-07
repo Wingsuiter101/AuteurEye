@@ -5,25 +5,59 @@ import DirectorDetailPage from './pages/DirectorDetailPage.tsx'
 import ComparisonPage from './pages/ComparisonPage.tsx'
 import ContextualQuiz from './pages/ContextualQuiz'
 import MovieDetailPage from './pages/MovieDetailPage'
+import { useEffect, useState } from 'react';
+import { tmdbService } from './services/tmdb';
+import { useTMDB } from './hooks/useTMDB';
+
+function BackgroundCollage({ posters }: { posters: string[] }) {
+  console.log('Collage posters:', posters);
+  return (
+    <div className="fixed inset-0 z-1 overflow-hidden">
+      <div
+        className="w-screen h-screen grid grid-cols-5 grid-rows-4 gap-0 animate-slow-move"
+        style={{
+          opacity: 0.05,
+          filter: 'blur(6px)',
+        }}
+      >
+        {posters.slice(0, 20).map((url) => (
+          <div
+            key={url}
+            className="w-full h-full min-h-[100px] min-w-[100px] bg-cover bg-center"
+            style={{ backgroundImage: `url(${url})` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function useCollagePosters() {
+  const [posters, setPosters] = useState<string[]>([]);
+  const { getImageUrl } = useTMDB();
+  useEffect(() => {
+    async function fetchCollage() {
+      try {
+        const movies = await tmdbService.getDiverseMoviePool(20);
+        setPosters(
+          movies
+            .filter((m: any) => m.poster_path)
+            .map((m: any) => getImageUrl(m.poster_path, 'w500'))
+            .filter((url): url is string => Boolean(url))
+        );
+      } catch {}
+    }
+    fetchCollage();
+  }, [getImageUrl]);
+  return posters;
+}
 
 function App() {
+  const posters = useCollagePosters();
   return (
     <Router basename="/AuteurEye">
       <div className="relative min-h-screen bg-auteur-bg text-auteur-primary">
-        {/* Video Background */}
-        <div className="fixed inset-0 w-full h-full overflow-hidden -z-10">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute min-w-full min-h-full object-cover opacity-20"
-          >
-            <source src="/AuteurEye/background.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay to ensure content readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-auteur-bg/80 to-auteur-bg-dark/80" />
-        </div>
+        <BackgroundCollage posters={posters} />
         
         <Navbar />
         <div>
