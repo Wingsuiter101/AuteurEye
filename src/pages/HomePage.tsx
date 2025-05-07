@@ -12,9 +12,16 @@ import LoadingCamera from '../components/LoadingCamera';
 import placeholderMale from '../assets/placeholder-male.png';
 import placeholderFemale from '../assets/placeholder-female.png';
 import placeholderAmbiguous from '../assets/placeholder-ambiguous.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 const CACHE_KEY = 'auteureye_directors_cache';
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
+// Font Awesome refresh icon
+const RefreshIcon = () => (
+  <FontAwesomeIcon icon={faRotateRight} className="w-4 h-4 mr-2" />
+);
 
 const HomePage: React.FC = () => {
   const { getDirectorDetails, getImageUrl, getEstablishedDirectors } = useTMDB();
@@ -135,6 +142,17 @@ const HomePage: React.FC = () => {
       .sort((a, b) => b.percentage - a.percentage)
       .slice(0, count);
   }, []);
+
+  // Handler to refresh the directors list and clear cache
+  const handleRefreshDirectors = async () => {
+    localStorage.removeItem(CACHE_KEY);
+    setIsLoading(true);
+    setError(null);
+    setDirectors([]);
+    setActiveIndex(0);
+    // Re-run the effect by updating a dummy state or just call fetchDirectors logic here if needed
+    window.location.reload(); // Simple way to re-trigger the effect and reload the list
+  };
 
   if (isLoading) {
     return (
@@ -408,6 +426,19 @@ const HomePage: React.FC = () => {
                 </AnimatePresence>
               </React.Fragment>
             ))}
+            {/* Refresh List Button (Mobile) - Only show after loading */}
+            {!isLoading && (
+              <div className="flex justify-center md:justify-start pt-6 z-10 relative">
+                <button
+                  onClick={handleRefreshDirectors}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-auteur-accent text-white font-medium shadow hover:bg-auteur-accent-dark transition-colors disabled:opacity-60"
+                  aria-busy={isLoading}
+                >
+                  <RefreshIcon />
+                  Refresh List
+                </button>
+              </div>
+            )}
           </motion.div>
 
           {/* Desktop Side-by-Side View */}
@@ -456,6 +487,19 @@ const HomePage: React.FC = () => {
                     </div>
                   </motion.button>
                 ))}
+                {/* Refresh List Button (Desktop) - Only show after loading */}
+                {!isLoading && (
+                  <div className="flex justify-center md:justify-start pt-6 z-10 relative">
+                    <button
+                      onClick={handleRefreshDirectors}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-auteur-accent text-white font-medium shadow hover:bg-auteur-accent-dark transition-colors disabled:opacity-60"
+                      aria-busy={isLoading}
+                    >
+                      <RefreshIcon />
+                      Refresh List
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
