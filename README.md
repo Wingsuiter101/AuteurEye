@@ -1,50 +1,76 @@
-# React + TypeScript + Vite
+# AuteurEye 🎬
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application that helps film enthusiasts explore and compare the works of renowned film directors. Built with React, TypeScript, and the TMDB API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Director Discovery**: Browse through a curated list of influential film directors
+- **Detailed Profiles**: View comprehensive information about each director including:
+  - Filmography
+  - Career statistics
+  - Genre preferences
+  - Average ratings
+  - Latest works
+- **Director Comparison**: Compare two directors side by side with detailed metrics
+- **Interactive Quiz**: Test your knowledge of film directors and their works
+- **Movie Details**: Explore detailed information about individual films
+- **Responsive Design**: Beautiful UI that works seamlessly on both desktop and mobile devices
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, Framer Motion
+- **State Management**: React Hooks
+- **API**: TMDB (The Movie Database)
+- **Deployment**: GitHub Pages
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository:
+```bash
+git clone https://github.com/Wingsuiter101/AuteurEye.git
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies:
+```bash
+cd AuteurEye
+npm install
 ```
+
+3. Create a `.env` file in the root directory and add your TMDB API key:
+```env
+VITE_TMDB_API_KEY=your_api_key_here
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+## Deployment
+
+The project is automatically deployed to GitHub Pages when changes are pushed to the main branch. To manually deploy:
+
+```bash
+npm run deploy
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [TMDB](https://www.themoviedb.org/) for providing the movie database API
+- [Lucide Icons](https://lucide.dev/) for the beautiful icons
+- [Framer Motion](https://www.framer.com/motion/) for the smooth animations
